@@ -9,26 +9,38 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Heart, Lock, Mail } from "lucide-react";
+import { loginUser } from "@/service/authService";
+import { Eye, EyeOff, Heart, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+type LoginForm = {
+  email: string;
+  password: string;
+};
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Login attempt:", formData);
+  const onSubmit = async (data: LoginForm) => {
+    setLoading(true);
+    const res = await loginUser(data);
+    console.log(res);
+    if (res.success) {
+      setLoading(false);
+      toast.success(res.message || "Login successful");
+    } else {
+      toast.error(res.message || "Login failed");
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,54 +66,91 @@ const LoginPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="email"
-                    name="email"
                     type="email"
                     placeholder="Enter your email"
                     className="pl-10"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Enter a valid email",
+                      },
+                    })}
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-red-500 text-sm ml-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
-              <div className="space-y-2">
+
+              {/* Password */}
+              <div className="space-y-1">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="password"
-                    name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    className="pl-10"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
+                    className="pl-10 pr-10"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters",
+                      },
+                    })}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-500"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
+                {errors.password && (
+                  <p className="text-red-500 text-sm ml-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
+
+              {/* Submit */}
               <Button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
               >
-                Sign In
+                {loading ? "Signing In..." : "Sign In"}
               </Button>
+
+              {/* Forgot password */}
               <div className="text-center">
                 <Button variant="link" className="text-sm text-gray-600">
                   Forgot your password?
                 </Button>
               </div>
             </form>
+
+            {/* Sign up link */}
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don&apost have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link
                   href="/register"
                   className="text-rose-500 hover:text-rose-600 font-medium"

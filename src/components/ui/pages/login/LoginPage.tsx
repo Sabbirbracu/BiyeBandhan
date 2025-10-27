@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { loginUser } from "@/service/authService";
 import { Eye, EyeOff, Heart, Lock, Mail } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ type LoginForm = {
 };
 
 const LoginPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const {
@@ -32,13 +34,23 @@ const LoginPage = () => {
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
-    const res = await loginUser(data);
-    console.log(res);
-    if (res.success) {
-      setLoading(false);
-      toast.success(res.message || "Login successful");
-    } else {
-      toast.error(res.message || "Login failed");
+    try {
+      const res = await loginUser(data);
+      console.log("Login response:", res);
+      
+      if (res?.status) {
+        toast.success(res.message || "Login successful");
+        // Wait a bit for cookie to be set and then redirect
+        setTimeout(() => {
+          router.push("/dashboard");
+          setLoading(false);
+        }, 500);
+      } else {
+        toast.error(res?.message || "Login failed");
+        setLoading(false);
+      }
+    } catch (error) {
+      toast.error("Login failed. Please try again.");
       setLoading(false);
     }
   };

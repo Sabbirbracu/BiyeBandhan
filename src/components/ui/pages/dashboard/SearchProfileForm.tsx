@@ -1,8 +1,20 @@
 "use client";
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Search, User, Calendar, Droplet, Heart } from "lucide-react"; // Added Droplet and Heart for better icons
+import { useState } from "react";
+
+// Helper component for consistent input styling
+const InputShell = ({ children, icon: Icon, label }: { children: React.ReactNode, icon: React.ElementType, label: string }) => (
+  <div className="flex flex-col gap-1.5">
+    <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+      <Icon className="h-4 w-4 text-rose-500" />
+      {label}
+    </label>
+    {children}
+  </div>
+);
 
 const SearchProfileForm = () => {
   const [gender, setGender] = useState("Female");
@@ -12,115 +24,112 @@ const SearchProfileForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search logic here
     console.log({ gender, age, religion, maritalStatus });
   };
 
+  // Define a consistent style for select/input fields
+  const baseInputStyle = "w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-300 focus:border-rose-500 text-sm bg-white transition-all shadow-inner hover:border-rose-300";
+
   return (
-    <Card className="shadow-sm">
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="font-semibold text-gray-900">Search Profile</h3>
-      </div>
-      <div className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Looking for */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Looking for:
-            </label>
-            <div className="flex space-x-4">
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Female"
-                  checked={gender === "Female"}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="text-rose-500 focus:ring-rose-500"
-                />
-                <span className="text-sm text-gray-700">Female</span>
-              </label>
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Male"
-                  checked={gender === "Male"}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="text-rose-500 focus:ring-rose-500"
-                />
-                <span className="text-sm text-gray-700">Male</span>
-              </label>
-            </div>
+    <div className="space-y-2"> {/* Increased spacing for better separation */}
+      
+      {/* Title with a clearer look */}
+      <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+        <Search className="h-6 w-6 text-rose-500" />
+        Find Your Match
+      </h2>
+
+      {/* Card with a cleaner, more professional appearance */}
+      <Card className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 grid gap-x-6 gap-y-5 md:grid-cols-2 lg:grid-cols-4 items-center"
+        >
+          {/* 1. Gender (Looking For) - More visual/button-like */}
+          <div className="col-span-2 md:col-span-1">
+            <InputShell label="Looking For" icon={User}>
+              <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+                {["Female", "Male"].map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => setGender(g)}
+                    className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm ${
+                      gender === g
+                        ? "bg-white text-rose-600 shadow-md ring-1 ring-rose-500" // Highlighted state is cleaner
+                        : "text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </div>
+            </InputShell>
           </div>
 
-          {/* Age */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Age: {age}
-            </label>
-            <input
-              type="range"
-              min="20"
-              max="40"
-              value={age}
-              onChange={(e) => setAge(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-rose-500"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>20</span>
-              <span>40</span>
-            </div>
+          {/* 2. Age Slider - Integrated with value in label */}
+          <div className="col-span-2 md:col-span-1">
+            <InputShell label={`Age: ${age} Years`} icon={Calendar}>
+              <input
+                type="range"
+                min={20}
+                max={40}
+                value={age}
+                onChange={(e) => setAge(Number(e.target.value))}
+                // Applied the base input style for a consistent height and rounded corners
+                className="w-full h-2 rounded-xl accent-rose-500 cursor-pointer appearance-none bg-gray-200 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md"
+              />
+              <div className="flex justify-between text-xs text-gray-500 px-1 mt-0.5">
+                <span>20</span>
+                <span>40</span>
+              </div>
+            </InputShell>
           </div>
 
-          {/* Religion */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Religion:
-            </label>
+          {/* 3. Religion Select */}
+          <InputShell label="Religion" icon={Droplet}>
             <select
               value={religion}
               onChange={(e) => setReligion(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm"
+              className={baseInputStyle} // Consistent style applied
             >
-              <option value="Muslim">Muslim</option>
-              <option value="Christian">Christian</option>
-              <option value="Hindu">Hindu</option>
-              <option value="Buddhist">Buddhist</option>
-              <option value="Other">Other</option>
+              <option>Muslim</option>
+              <option>Christian</option>
+              <option>Hindu</option>
+              <option>Buddhist</option>
+              <option>Other</option>
             </select>
-          </div>
+          </InputShell>
 
-          {/* Marital Status */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Marital Status:
-            </label>
+          {/* 4. Marital Status Select */}
+          <InputShell label="Marital Status" icon={Heart}>
             <select
               value={maritalStatus}
               onChange={(e) => setMaritalStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm"
+              className={baseInputStyle} // Consistent style applied
             >
-              <option value="UnMarried">UnMarried</option>
-              <option value="Married">Married</option>
-              <option value="Divorced">Divorced</option>
-              <option value="Widowed">Widowed</option>
+              <option>UnMarried</option>
+              <option>Married</option>
+              <option>Divorced</option>
+              <option>Widowed</option>
             </select>
-          </div>
+          </InputShell>
 
-          {/* Search Button */}
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 flex items-center justify-center space-x-2"
-          >
-            <Search className="h-4 w-4" />
-            <span>Search</span>
-          </Button>
+          {/* 5. Search Button - Full width, spanning all columns */}
+          <div className="lg:col-span-4 col-span-2 mt-2">
+            <Button
+              type="submit"
+              // Adjusted gradient for a slightly deeper, more formal look
+              className="w-full py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-lg text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl rounded-xl"
+            >
+              <Search className="h-5 w-5" />
+              <span>Search Profiles</span>
+            </Button>
+          </div>
         </form>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 };
 
 export default SearchProfileForm;
-

@@ -9,6 +9,8 @@ import SearchProfileForm from "./SearchProfileForm";
 import DailyMatchesSection from "./DailyMatchesSection";
 import WhoViewedProfileCard from "./WhoViewedProfileCard";
 import NewInterestsCard from "./NewInterestsCard";
+import MyShortlistedCard from "./MyShortlistedCard";
+import TipsCard from "./TipCard";
 
 const DashboardPage = () => {
   const [user, setUser] = useState<any>(null);
@@ -68,8 +70,10 @@ const DashboardPage = () => {
         </div>
 
         <div className="lg:col-span-4 space-y-6">
+          <TipsCard />
           <WhoViewedProfileCard />
-          <NewInterestsCard />
+          <MyShortlistedCard />
+          
         </div>
       </div>
     </div>

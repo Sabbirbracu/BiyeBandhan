@@ -1,55 +1,98 @@
 "use client";
-import { Card } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { ArrowRight, BookUser, Calendar, Eye, GraduationCap, MapPin, ShieldCheck, Zap } from "lucide-react";
 
 const DailyMatchesSection = () => {
-  // Mock data - replace with actual data from API
   const matches = [
-    { id: "EIMOSS4", age: 23, education: "B.Sc", location: "Dhaka" },
-    { id: "EIW31554", age: 25, education: "M.Sc", location: "Chittagong" },
-    { id: "EIMOSS5", age: 24, education: "B.A", location: "Sylhet" },
-    { id: "EIMOSS6", age: 26, education: "BBA", location: "Rajshahi" },
+    { id: "M-101", name: "Ahmed Khan", age: 28, education: "Masters in Finance", location: "Dhaka", verified: true, imageUrl: "https://via.placeholder.com/150/FF6347/FFFFFF?text=A" },
+    { id: "F-205", name: "Fatima Begum", age: 26, education: "B.Sc. Computer Science", location: "Chittagong", verified: true, imageUrl: "https://via.placeholder.com/150/FF69B4/FFFFFF?text=F" },
+    { id: "M-312", name: "Rahim Ali", age: 30, education: "PhD in Physics", location: "Sylhet", verified: false, imageUrl: "" }, // fallback will work
   ];
 
+  const fallbackImage = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+
   return (
-    <Card className="shadow-sm">
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="font-semibold text-gray-900">Daily Matches</h3>
-      </div>
-      <div className="p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {matches.map((match) => (
+    <div className="space-y-4">
+      {/* Section Title */}
+      <h2 className="text-2xl font-extrabold text-gray-800 flex items-center gap-2">
+        <Zap className="h-6 w-6 text-amber-500" />
+        Your Daily Match Picks
+      </h2>
+
+      <Card className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {matches.map((match, index) => (
             <div
               key={match.id}
-              className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-rose-300 transition-colors"
+              className="group flex flex-col bg-white border border-gray-100 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
-              <div className="flex items-start space-x-3">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-300 to-pink-300 flex items-center justify-center text-white font-bold text-lg">
-                  {match.id.charAt(match.id.length - 1)}
+              {/* Image / Avatar */}
+              <div className="relative h-40 w-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                <img
+                  src={match.imageUrl?.trim() ? match.imageUrl : fallbackImage}
+                  alt={match.name || `Profile ${index + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 text-white">
+                  <h3 className="text-lg font-bold leading-tight drop-shadow-md truncate">{match.name || `Match ID: ${match.id}`}</h3>
+                  <p className="text-xs text-gray-200 drop-shadow-sm truncate">{match.id}</p>
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900 mb-1">{match.id}</h4>
-                  <p className="text-sm text-gray-600">
-                    {match.age} years, {match.education}
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-2 w-full text-xs"
-                  >
-                    <Eye className="h-3 w-3 mr-1" />
-                    View Profile
-                  </Button>
+
+                {/* Verified Badge */}
+                {match.verified && (
+                  <div className="absolute top-3 right-3 bg-green-500 text-white p-1 rounded-full text-xs font-bold shadow-md flex items-center justify-center">
+                    <ShieldCheck className="h-4 w-4" />
+                  </div>
+                )}
+              </div>
+
+              {/* Details */}
+              <div className="p-4 flex-1 space-y-2">
+                <div className="grid grid-cols-2 gap-y-2 gap-x-3 text-sm text-gray-700 font-medium">
+                  <span className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-rose-500 flex-shrink-0" /> {match.age} yrs
+                  </span>
+                  <span className="flex items-center gap-2 truncate">
+                    <GraduationCap className="h-4 w-4 text-rose-500 flex-shrink-0" /> {match.education}
+                  </span>
+                  <span className="col-span-2 flex items-center gap-2 truncate">
+                    <MapPin className="h-4 w-4 text-rose-500 flex-shrink-0" /> {match.location}
+                  </span>
+                  <span className="col-span-2 flex items-center gap-2 truncate">
+                    <BookUser className="h-4 w-4 text-rose-500 flex-shrink-0" /> Profession: Engineer
+                  </span>
                 </div>
               </div>
+
+              {/* View Profile Button */}
+              <Button
+                size="lg" // Use valid size: default, sm, lg, icon
+                className="w-full py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-base text-white font-bold flex items-center justify-center gap-2 transition-all duration-200"
+              >
+                <Eye className="h-5 w-5" />
+                View Profile
+              </Button>
             </div>
           ))}
         </div>
-      </div>
-    </Card>
+
+        {/* Footer Link */}
+        <div className="mt-6 pt-4 border-t border-gray-100 flex justify-center">
+          <a
+            href="/matches"
+            className="text-base font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-2 transition-colors"
+          >
+            Explore All Matches
+            <ArrowRight className="h-5 w-5" />
+          </a>
+        </div>
+      </Card>
+    </div>
   );
 };
 
 export default DailyMatchesSection;
-

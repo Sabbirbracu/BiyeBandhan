@@ -37,9 +37,17 @@ const Login = () => {
     try {
       const res = await loginUser(data);
       console.log("Login response:", res);
-      
+
       if (res?.status) {
         toast.success(res.message || "Login successful");
+
+        // ✅ Save token in localStorage for client-side use
+        if (res.token) {
+          console.log(res.token);
+          localStorage.setItem("accessToken", res.token);
+          console.log("set localstorage token");
+        }
+
         // Wait a bit for cookie to be set and then redirect
         setTimeout(() => {
           router.push("/user/dashboard");
@@ -54,6 +62,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 flex items-center justify-center px-4">

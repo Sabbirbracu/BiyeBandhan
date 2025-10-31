@@ -73,13 +73,14 @@ export default function Step8ProfileUpload() {
 
       {pictures.length > 0 ? (
         <div className="flex flex-col items-center gap-4">
-          <Image
-            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${pictures[0]?.url || '/placeholder.png'}`}
-            alt="Profile Picture"
-            width={250}
-            height={250}
-            className="rounded-full object-cover border-4 border-blue-500 shadow-lg"
-          />
+        <Image
+          src={pictures[0]?.url || '/placeholder.png'} // Use URL directly
+          alt="Profile Picture"
+          width={250}
+          height={250}
+          className="rounded-full object-cover border-4 border-blue-500 shadow-lg"
+        />
+
           <p className="text-gray-500 text-sm">
             You can update your profile picture if you want.
           </p>

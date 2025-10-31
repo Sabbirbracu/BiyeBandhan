@@ -1,5 +1,7 @@
+// 
+
 "use client";
-import { getCurrentUser } from "@/service/authService";
+
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CompleteProfileBanner from "../../../components/ui/dashboard/CompleteProfileBanner";
@@ -18,20 +20,28 @@ const DashboardPage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+
       try {
-        const userData = await getCurrentUser();
-        if (userData) {
-          setUser(userData);
-        } else {
-          router.push("/login");
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
+        const res = await fetch("/api/user/me", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch user");
+
+        const data = await res.json();
+        setUser(data.data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
         router.push("/login");
       } finally {
         setLoading(false);
       }
     };
+
     fetchUser();
   }, [router]);
 
@@ -46,8 +56,6 @@ const DashboardPage = () => {
     );
   }
 
-  const userName = user?.name || user?.email?.split("@")[0] || "User";
-
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Full-width Header */}
@@ -55,30 +63,28 @@ const DashboardPage = () => {
 
       {/* Sidebar + Main Content */}
       <div className="flex flex-1">
-  {/* Sidebar */}
-  <UserSidebar userName={userName} />
+        {/* Sidebar */}
+        <UserSidebar user={user} />
 
-  {/* Main Content */}
-  <main className="flex-1 ml-72 overflow-y-auto">
-    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 space-y-6">
-          <CompleteProfileBanner />
-          <SearchProfileForm />
-          <DailyMatchesSection />
-        </div>
+        {/* Main Content */}
+        <main className="flex-1 ml-72 overflow-y-auto">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-8 space-y-6">
+                <CompleteProfileBanner />
+                <SearchProfileForm />
+                <DailyMatchesSection />
+              </div>
 
-        <div className="lg:col-span-4 space-y-6">
-          <TipsCard />
-          <WhoViewedProfileCard />
-          <MyShortlistedCard />
-          
-        </div>
+              <div className="lg:col-span-4 space-y-6">
+                <TipsCard />
+                <WhoViewedProfileCard />
+                <MyShortlistedCard />
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
-  </main>
-</div>
-
     </div>
   );
 };

@@ -1,16 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/service/authService";
-import Header from "./Header";
-import UserSidebar from "./UserSidebar";
-import CompleteProfileBanner from "./CompleteProfileBanner";
-import SearchProfileForm from "./SearchProfileForm";
-import DailyMatchesSection from "./DailyMatchesSection";
-import WhoViewedProfileCard from "./WhoViewedProfileCard";
-import NewInterestsCard from "./NewInterestsCard";
-import MyShortlistedCard from "./MyShortlistedCard";
-import TipsCard from "./TipCard";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import CompleteProfileBanner from "../../../components/ui/dashboard/CompleteProfileBanner";
+import DailyMatchesSection from "../../../components/ui/dashboard/DailyMatchesSection";
+import Header from "../../../components/ui/dashboard/Header";
+import MyShortlistedCard from "../../../components/ui/dashboard/MyShortlistedCard";
+import SearchProfileForm from "../../../components/ui/dashboard/SearchProfileForm";
+import TipsCard from "../../../components/ui/dashboard/TipCard";
+import UserSidebar from "../../../components/ui/dashboard/UserSidebar";
+import WhoViewedProfileCard from "../../../components/ui/dashboard/WhoViewedProfileCard";
 
 const DashboardPage = () => {
   const [user, setUser] = useState<any>(null);

@@ -26,8 +26,7 @@ const Header: React.FC<HeaderProps> = ({ user}) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navLink = [
-    { name: "Inbox", path: "/inbox" },
-    { name: "Search", path: "/search" },
+    { name: "Search", path: "/user/search" },
     { name: "Success Stories", path: "/stories" },
     { name: "Packages", path: "/packages" },
     { name: "Help", path: "/help" },

@@ -31,7 +31,7 @@ const CompleteProfileBanner = () => {
 
           {/* Right Side Button */}
           <Link
-            href="/profile/edit"
+            href="/user/profile/step1"
             className="group flex items-center gap-2 bg-white text-rose-600 px-5 py-2.5 rounded-lg font-semibold text-sm md:text-base shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200 active:scale-[0.98]"
           >
             <span>Finish Now</span>

@@ -1,9 +1,9 @@
 import Footer from "@/components/share/Footer";
 import Navbar from "@/components/share/Navbar";
-import FeaturesSection from "@/components/ui/pages/home/FeaturesSection";
-import HeroSection from "@/components/ui/pages/home/HeroSection";
-import PricingSection from "@/components/ui/pages/home/PricingSection";
-import ProcessSection from "@/components/ui/pages/home/ProcessSection";
+import FeaturesSection from "@/components/ui/home/FeaturesSection";
+import HeroSection from "@/components/ui/home/HeroSection";
+import PricingSection from "@/components/ui/home/PricingSection";
+import ProcessSection from "@/components/ui/home/ProcessSection";
 
 export default function Home() {
   return (

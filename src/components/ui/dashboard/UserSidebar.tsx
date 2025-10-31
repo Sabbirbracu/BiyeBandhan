@@ -5,55 +5,19 @@
 // import { ChevronRight, Crown, LogOut } from "lucide-react";
 // import Link from "next/link";
 // import { usePathname, useRouter } from "next/navigation";
-// import { useEffect, useState } from "react";
-// import { toast } from "sonner";
 
-// interface UserSidebarProps {}
+// interface UserSidebarProps {
+//   user: any;
+// }
 
-// const UserSidebar = ({}: UserSidebarProps) => {
+// const UserSidebar = ({ user }: UserSidebarProps) => {
 //   const router = useRouter();
 //   const pathname = usePathname();
-//   const [user, setUser] = useState<any>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(false);
 
 //   const handleLogout = async () => {
 //     await logout();
-//     toast.success("Logged out successfully");
 //     router.push("/");
 //   };
-
-//   const fetchUser = async () => {
-//     setLoading(true);
-//     setError(false);
-//     const accessToken = localStorage.getItem("accessToken");
-
-//     try {
-//       const res = await fetch("/api/user/me", {
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//           "Content-Type": "application/json",
-//         },
-//       });
-
-//       if (!res.ok) throw new Error("Failed to fetch user");
-
-//       const userData = await res.json();
-//       console.log("Fetched user data:", userData);
-
-//       setUser(userData.data);
-//     } catch (err) {
-//       console.error("Failed to fetch user data:", err);
-//       setError(true);
-//       toast.error("Failed to fetch user data");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchUser();
-//   }, []);
 
 //   const menuItems = [
 //     { name: "Dashboard", path: "/user/dashboard" },
@@ -61,7 +25,7 @@
 //     { name: "Photo Management", path: "/user/photos" },
 //     { name: "Messages (8)", path: "/user/messages" },
 //     { name: "Partner Preferences", path: "/user/preferences" },
-//     { name: "Account Settings", path: "/user/settings" },
+//     { name: "Payment", path: "/user/payment" },
 //   ];
 
 //   const plan = user?.plan?.plan_name || "Free";
@@ -74,35 +38,13 @@
 //   };
 //   const nextPlan = upgradeMapping[plan] || null;
 
-//   if (loading) {
-//     return (
-//       <aside className="fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-gradient-to-br from-gray-950 to-rose-700 flex items-center justify-center text-gray-300">
-//         Loading...
-//       </aside>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <aside className="fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-gradient-to-br from-gray-950 to-rose-700 flex flex-col items-center justify-center text-gray-300 p-4">
-//         <p className="mb-4 text-center">Failed to load user data.</p>
-//         <button
-//           onClick={fetchUser}
-//           className="bg-rose-600 text-white py-2 px-4 rounded hover:bg-rose-700 transition-all"
-//         >
-//           Retry
-//         </button>
-//       </aside>
-//     );
-//   }
-
 //   return (
 //     <aside className="fixed top-16 left-0 h-[calc(100vh-4rem)] w-72 bg-gradient-to-br from-gray-950 to-rose-700 border-r border-gray-100 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.1)] flex flex-col items-center p-6 z-40">
 //       {/* Profile Section */}
 //       <div className="flex flex-col items-center mb-6 mt-3">
 //         {user?.profile_picture ? (
 //           <img
-//             src={user.profile_picture} // Make sure this is the full URL
+//             src={user.profile_picture}
 //             alt={user.name}
 //             className="w-20 h-20 rounded-full object-cover ring-4 ring-white/10 shadow-lg mb-2"
 //           />
@@ -119,7 +61,6 @@
 //           Online
 //         </span>
 //       </div>
-
 
 //       {/* Membership Progress */}
 //       <div className="w-full mb-4">
@@ -206,9 +147,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface UserSidebarProps {
   user: any;
+  onPaymentClick?: () => void; // new callback prop
 }
 
-const UserSidebar = ({ user }: UserSidebarProps) => {
+const UserSidebar = ({ user, onPaymentClick }: UserSidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -223,7 +165,7 @@ const UserSidebar = ({ user }: UserSidebarProps) => {
     { name: "Photo Management", path: "/user/photos" },
     { name: "Messages (8)", path: "/user/messages" },
     { name: "Partner Preferences", path: "/user/preferences" },
-    { name: "Account Settings", path: "/user/settings" },
+    { name: "Payment", path: "" }, // leave path empty because it will trigger modal
   ];
 
   const plan = user?.plan?.plan_name || "Free";
@@ -296,6 +238,21 @@ const UserSidebar = ({ user }: UserSidebarProps) => {
       <nav className="w-full space-y-1 flex-1">
         {menuItems.map((item) => {
           const isActive = pathname === item.path;
+
+          // Special case for Payment button: call modal callback
+          if (item.name === "Payment") {
+            return (
+              <button
+                key={item.name}
+                onClick={onPaymentClick}
+                className="w-full flex items-center justify-between py-2 px-3 rounded-md text-sm font-medium transition-all duration-200 text-gray-300 hover:bg-rose-50/10 hover:text-rose-300"
+              >
+                <span>{item.name}</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            );
+          }
+
           return (
             <Link key={item.name} href={item.path}>
               <button

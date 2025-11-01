@@ -34,7 +34,7 @@ export default function SearchPage(){
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <Header />
             <div className="flex flex-1">
-                <UserSidebar userName={userName}/>
+                <UserSidebar user={user}/>
 
                 <main className="flex-1 ml-72 px-10 py-10 overflow-hidden">
                     <SearchProfileForm />

@@ -2,6 +2,7 @@
 
 import ChatList from "@/components/ui/Message/ChatList";
 import ChatWindow from "@/components/ui/Message/ChatWindow";
+import { useEffect, useState } from "react";
 
 // Message and ChatItem Types
 interface Message {
@@ -21,14 +22,55 @@ interface ChatItem {
 }
 
 export default function MessagePage() {
-  // Demo chats
-  const chats: ChatItem[] = [
-    { id: 1, name: "Ayesha Rahman", lastMsg: "M:101", image: "https://i.pravatar.cc/100?img=47", status: "online", timeOrDate: "Yesterday", isActive: true },
-    { id: 2, name: "Nusrat Hossain", lastMsg: "M:10", image: "https://i.pravatar.cc/100?img=12", status: "offline", timeOrDate: "19:39 PM", isActive: false },
-    { id: 3, name: "Farhana Karim", lastMsg: "00 AU, 2012", image: "https://i.pravatar.cc/100?img=33", status: "online", timeOrDate: "19:32 PM", isActive: false },
-    { id: 4, name: "Ahmed Khan", lastMsg: "M:12", image: "https://i.pravatar.cc/100?img=3", status: "offline", timeOrDate: "19:38 PM", isActive: false },
-  ];
+  const [chats, setChats] = useState<ChatItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+
+        const res = await fetch("/api/user/chat", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken || ""}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch chats");
+
+        const rawData = await res.json();
+        const chatArray = rawData?.data || [];
+
+        // Map backend data to your ChatItem structure
+        const formatted: ChatItem[] = chatArray.map((item: any, index: number) => ({
+          id: item.id,
+          name: item.other_user?.name || "Unknown",
+          lastMsg: item.last_message || "No messages yet",
+          image:
+            item.other_user?.avatar ||
+            "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+          status: "offline", // optional, can be updated dynamically later
+          timeOrDate: item.last_message_at
+            ? new Date(item.last_message_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            : "",
+          isActive: index === 0, // first chat is active by default
+        }));
+
+        setChats(formatted);
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChats();
+  }, []);
+
+  const activeChat = chats.find((c) => c.isActive);
+
+  // Placeholder messages for now; you can replace with actual chat messages fetching later
   const messages: Message[] = [
     { sender: "them", text: "Hey Sabbir, how have you been?", time: "10:00 AM" },
     { sender: "me", text: "Hey! I’m doing great, just busy with projects.", time: "10:02 AM" },
@@ -36,7 +78,7 @@ export default function MessagePage() {
     { sender: "me", text: "Sure! Looking forward to it.", time: "10:07 AM" },
   ];
 
-  const activeChat = chats.find((c) => c.isActive);
+  if (loading) return <div className="p-10 text-gray-500">Loading chats...</div>;
 
   return (
     <div className="h-[calc(100vh-4rem)] flex bg-gray-50">

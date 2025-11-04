@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
+      // Local Laravel storage images
       {
         protocol: "http",
         hostname: "127.0.0.1",
@@ -15,6 +16,12 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
         port: "8000",
         pathname: "/storage/**",
+      },
+      // External fallback avatars
+      {
+        protocol: "https",
+        hostname: "cdn-icons-png.flaticon.com",
+        pathname: "/**",
       },
     ],
   },

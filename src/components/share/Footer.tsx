@@ -1,12 +1,11 @@
 import {
   Facebook,
-  Heart,
   Instagram,
   Linkedin,
   Mail,
   MapPin,
   Phone,
-  Twitter,
+  Twitter
 } from "lucide-react";
 
 const Footer = () => {
@@ -68,10 +67,14 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
-              <div className="bg-gradient-to-r from-red-600 to-pink-600 p-2 rounded-full">
-                <Heart className="w-6 h-6 text-white" />
+              <div className="p-1.5 rounded-full overflow-hidden w-20 h-20 flex items-center justify-center">
+                  <img
+                      src="/logo.png" // **<-- REPLACE WITH YOUR ACTUAL IMAGE PATH**
+                      alt="BiyeBandhan Logo"
+                      className="w-full h-full object-contain" // Ensures the image fits well
+                  />
               </div>
-              <span className="text-2xl font-bold"> BiyeBandhan</span>
+              <span className="text-2xl font-bold"> ShaadiMart BD</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               The most trusted matrimony service for NRIs in Bangladesh. We help

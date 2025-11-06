@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     });
 
     const data = await res.json();
-    // console.log("Chat list data:", data);
+    console.log("Chat list data:", data);
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
     console.error("Failed to fetch chat list:", error);

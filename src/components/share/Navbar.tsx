@@ -49,17 +49,24 @@ const Navbar = () => {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center space-x-2">
-              <div className="bg-gradient-to-r from-red-600 to-pink-600 p-2 rounded-full">
-                <Heart className="w-6 h-6 text-white" />
+              {/* This is the modified section: icon removed, image added */}
+              <div className="p-1.5 rounded-full overflow-hidden w-20 h-20 flex items-center justify-center">
+                  <img
+                      src="/logo.png" // **<-- REPLACE WITH YOUR ACTUAL IMAGE PATH**
+                      alt="BiyeBandhan Logo"
+                      className="w-full h-full object-contain" // Ensures the image fits well
+                  />
               </div>
+              {/* End of modified section */}
+              
               <span
-                className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
-                  isScrolled ? "text-gray-800" : "text-white"
-                }`}
+                  className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
+                      isScrolled ? "text-gray-800" : "text-white"
+                  }`}
               >
-                BiyeBandhan
+                  ShaadiMart BD
               </span>
-            </div>
+          </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
@@ -74,7 +81,7 @@ const Navbar = () => {
                   {item.name}
                 </a>
               ))}
-              <Link href={"/register"}>
+              <Link href={"/login"}>
                 <button className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-2 rounded-full hover:from-red-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl">
                   Sign In
                 </button>
@@ -152,7 +159,7 @@ const Navbar = () => {
           </div>
 
           {/* Sign In Button */}
-          <Link href={"/register"} className="absolute bottom-8 left-6 right-6">
+          <Link href={"/login"} className="absolute bottom-8 left-6 right-6">
             <button
               className="w-full bg-gradient-to-r from-red-600 to-pink-600 text-white py-4 rounded-full hover:from-red-700 hover:to-pink-700 transition-all duration-300 shadow-lg font-medium text-lg"
               onClick={() => setIsMobileMenuOpen(false)}

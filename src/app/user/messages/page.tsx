@@ -90,6 +90,7 @@ export default function MessagePage() {
       {/* Chat Window */}
       <div className="flex-1 bg-white">
         <ChatWindow
+          chatId={activeChat?.id?.toString() || ""}
           messages={messages}
           activeUser={{
             name: activeChat?.name || "Select Chat",

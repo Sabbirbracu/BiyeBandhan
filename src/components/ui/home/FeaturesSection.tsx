@@ -23,7 +23,7 @@ const FeaturesSection = () => {
             <div className="space-y-8">
               <div>
                 <h2 className="text-4xl font-bold text-gray-800 mb-4">
-                  Why choose <span className="text-red-600">BD Marriage</span>
+                  Why choose <span className="text-red-600">ShaadiMart BD</span>
                 </h2>
               </div>
 

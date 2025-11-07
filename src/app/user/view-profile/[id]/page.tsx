@@ -44,9 +44,13 @@ export default function ViewProfilePage({ params }: { params: Promise<{ id: stri
       </div>
     );
 
+  
   const age = calculateAge(profile.dob);
   const primaryPhotoUrl =
-    profile.photos.find((p) => p.is_primary)?.url || profile.photos[0]?.url || "";
+    profile.photos?.find((p) => p.is_primary)?.url ||
+    profile.photos?.[0]?.url ||
+    "";
+
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">

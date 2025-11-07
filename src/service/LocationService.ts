@@ -34,7 +34,7 @@ export const getLocationByProfile = async (profileId: number) => {
     if (!res.ok) return null;
 
     const data = await res.json();
-    console.log("Location fetch response:", data);
+    // console.log("Location fetch response:", data);
     return data; // make sure it returns the object, not wrapped in {data: ...}
   } catch (err) {
     console.error("getLocationByProfile error:", err);

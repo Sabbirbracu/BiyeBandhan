@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 // All imports used as provided
 import { getCurrentUser } from "../../../../service/authService/index";
+import { createPreference, getPreferenceByProfile, updatePreference } from "../../../../service/PartnerPreferenceService";
 import { getProfileByUser } from "../../../../service/ProfileService";
-import { getPreferenceByProfile, createPreference, updatePreference } from "../../../../service/PartnerPreferenceService";
 
 interface FormData {
   preferred_age_min: number | "";
@@ -105,6 +105,17 @@ export default function Step7Page() {
         const response = await createPreference(payload);
         if (response?.id) setPreferenceId(response.id);
       }
+
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 7, 
+        }),
+      });
 
       router.push("/user/profile/step8"); // next step
     } catch (error) {

@@ -101,6 +101,16 @@ export default function Step1Page() {
         response = await createProfileStep1({ ...formData, user_id: userId });
         if (response?.id) setProfileId(response.id);
       }
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 1, 
+        }),
+      });
 
       if (response) router.push("/user/profile/step2");
     } catch (error) {
@@ -187,7 +197,7 @@ export default function Step1Page() {
                   className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-rose-500 focus:border-rose-500 transition duration-150 ease-in-out hover:border-gray-400 appearance-none bg-white"
                 >
                   <option value="" disabled>Select</option>
-                  <option value="never_married">Never Married</option>
+                  <option value="UnMarried">UnMarried</option>
                   <option value="divorced">Divorced</option>
                   <option value="widow">Widow</option>
                   <option value="separated">Separated</option>

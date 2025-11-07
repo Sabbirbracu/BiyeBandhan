@@ -92,6 +92,17 @@ export default function Step6Page() {
         if (response?.id) setLifestyleId(response.id);
       }
 
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 6, 
+        }),
+      });
+
       router.push("/user/profile/step7"); // next step
     } catch (error) {
       console.error("Lifestyle submission failed:", error);

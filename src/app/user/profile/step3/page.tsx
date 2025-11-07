@@ -92,6 +92,17 @@ export default function Step3Page() {
         if (response?.id) setCareerId(response.id);
       }
 
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 3, 
+        }),
+      });
+
       router.push("/user/profile/step4"); // next step
     } catch (error) {
       console.error("Career submission failed:", error);
@@ -183,13 +194,13 @@ export default function Step3Page() {
 
             {/* Annual Income */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Annual Income (e.g., in USD)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Annual Income (e.g., in BDT)</label>
               <input
                 type="number"
                 name="annual_income"
                 value={formData.annual_income}
                 onChange={handleChange}
-                placeholder="e.g., 50000"
+                placeholder="e.g., 50,000"
                 className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-rose-500 focus:border-rose-500 transition duration-150 ease-in-out hover:border-gray-400"
                 required
               />

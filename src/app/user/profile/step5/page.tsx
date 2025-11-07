@@ -103,6 +103,17 @@ export default function Step5Page() {
         if (response?.id) setLocationId(response.id);
       }
 
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 5, 
+        }),
+      });
+
       router.push("/user/profile/step6"); // next step
     } catch (error) {
       console.error("Location submission failed:", error);

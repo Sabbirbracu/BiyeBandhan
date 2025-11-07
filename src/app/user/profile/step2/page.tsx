@@ -97,6 +97,17 @@ export default function Step2Page() {
         if (response?.id) setEducationId(response.id);
       }
 
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 2, 
+        }),
+      });
+
       router.push("/user/profile/step3");
     } catch (error) {
       console.error("Education submission failed:", error);

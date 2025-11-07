@@ -88,12 +88,17 @@ const UserSidebar = ({ user, onPaymentClick }: UserSidebarProps) => {
         </div>
       </div>
 
+    
       {nextPlan && (
-        <button className="w-full mb-5 bg-gradient-to-r from-rose-600 to-pink-600 text-white py-2 rounded-lg font-semibold hover:from-rose-700 hover:to-pink-700 transition-all flex items-center justify-center space-x-2 text-sm shadow-sm">
+        <button
+          onClick={onPaymentClick}
+          className="w-full mb-5 bg-gradient-to-r from-rose-600 to-pink-600 text-white py-2 rounded-lg font-semibold hover:from-rose-700 hover:to-pink-700 transition-all flex items-center justify-center space-x-2 text-sm shadow-sm"
+        >
           <Crown className="h-4 w-4" />
           <span>Upgrade to {nextPlan}</span>
         </button>
       )}
+
 
       {/* Sidebar Menu */}
       <nav className="w-full space-y-1 flex-1">

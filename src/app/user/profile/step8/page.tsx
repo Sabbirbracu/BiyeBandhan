@@ -55,9 +55,30 @@ export default function Step8ProfileUpload() {
     }
   };
 
-  const handleSubmit = () => {
-    router.push("/user/dashboard"); // Navigate to dashboard
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 8,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update profile progress");
+      }
+
+      router.push("/user/dashboard"); // Navigate after successful completion
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to complete your profile");
+    }
   };
+
   
   // --- Navigation Handler (Previous Step) ---
   const handlePreviousStep = () => {

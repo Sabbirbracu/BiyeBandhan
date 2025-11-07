@@ -220,14 +220,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 // All imports used as provided
+import { getCurrentUser } from "../../../../service/authService/index";
 import {
   createFamilyDetail,
   getFamilyDetailByProfile,
   updateFamilyDetail,
 } from "../../../../service/FamilyDetailService";
-import { getCurrentUser } from "../../../../service/authService/index";
 import { getProfileByUser } from "../../../../service/ProfileService";
 
 interface FormData {
@@ -329,6 +329,17 @@ export default function Step4Page() {
         console.log("Family detail created:", response);
         if (response?.id) setFamilyId(response.id);
       }
+
+      await fetch("/api/user/profileProgress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`,
+        },
+        body: JSON.stringify({
+          completed_step: 4, 
+        }),
+      });
 
       router.push("/user/profile/step5"); // next step
     } catch (error) {

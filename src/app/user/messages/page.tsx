@@ -1,7 +1,7 @@
 "use client";
 
 import ChatList from "@/components/ui/Message/ChatList";
-import ChatWindow from "@/components/ui/Message/ChatWindow";
+// import ChatWindow from "@/components/ui/Message/ChatWindow";
 import { useEffect, useState } from "react";
 
 // Message and ChatItem Types
@@ -88,7 +88,7 @@ export default function MessagePage() {
       </div>
 
       {/* Chat Window */}
-      <div className="flex-1 bg-white">
+      {/* <div className="flex-1 bg-white">
         <ChatWindow
           chatId={activeChat?.id?.toString() || ""}
           messages={messages}
@@ -97,7 +97,7 @@ export default function MessagePage() {
             image: activeChat?.image || "https://cdn-icons-png.flaticon.com/512/847/847969.png",
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

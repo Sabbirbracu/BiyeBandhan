@@ -17,11 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SignUpUser } from "@/service/authService";
-import { Eye, EyeOff, Heart, Lock, Mail, Phone, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, Phone, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+
 
 type FormData = {
   name: string;
@@ -35,6 +37,9 @@ type FormData = {
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
 
   const {
     register,
@@ -50,7 +55,15 @@ const RegisterPage = () => {
       const res = await SignUpUser(data);
       console.log("Registration attempt:", res);
       if (res.success) {
-        toast.success("Registration successful! Please log in.");
+        // toast.success("Registration successful! Please log in.");
+        toast.success("Registration successful! Redirecting...");
+        const redirect = searchParams.get("redirect");
+        setTimeout(() => {
+          const loginRedirect = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login";
+          router.push(loginRedirect);
+        }, 800);
+
+
       } else {
         toast.error(`Registration failed: ${res.message || "Unknown error"}`);
       }
@@ -63,14 +76,18 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center -mb-3">
           <Link
             href="/"
             className="flex items-center justify-center space-x-2 mb-6"
           >
-            <Heart className="h-8 w-8 text-rose-500" />
-            <span className="text-3xl font-bold text-gray-900">
-              BiyeBandhan
+            <img
+              src="/logo.png" 
+              alt="BiyeBandhan Logo"
+              className="w-25 h-25 object-contain"
+            />
+            <span className="text-3xl font-bold mr-12 text-gray-900">
+              ShaadiMart BD
             </span>
           </Link>
         </div>
@@ -79,7 +96,7 @@ const RegisterPage = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Create Account</CardTitle>
             <CardDescription>
-              Join BiyeBandhan to find your perfect match
+              Join Shaadimart BD to find your perfect match
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -272,12 +289,19 @@ const RegisterPage = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <Link
+                {/* <Link
                   href="/login"
                   className="text-rose-500 hover:text-rose-600 font-medium"
                 >
                   Login
+                </Link> */}
+                <Link
+                  href={`/login${typeof window !== "undefined" && window.location.search ? window.location.search : ""}`}
+                  className="text-rose-500 hover:text-rose-600 font-medium"
+                >
+                  Login
                 </Link>
+
               </p>
             </div>
           </CardContent>

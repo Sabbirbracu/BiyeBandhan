@@ -1,19 +1,65 @@
 "use client";
 import { MessageCircle, Shield, Users } from "lucide-react";
+import { useEffect } from "react";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const HeroSection = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+
   const [searchData, setSearchData] = useState({
     lookingFor: "",
     ageFrom: "",
     ageTo: "",
     religion: "",
-    location: "",
+    marital_status: "",
   });
 
   const handleSearch = () => {
     console.log("Search initiated with:", searchData);
   };
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   const query = new URLSearchParams({
+  //     gender: searchData.lookingFor,
+  //     age_from: searchData.ageFrom, // always start from 18
+  //     age_to: searchData.ageTo,
+  //     religion: searchData.religion,
+  //     marital_status: searchData.marital_status,
+  //   }).toString();
+
+  //   router.push(`/user/search?${query}`);
+  // };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const query = new URLSearchParams({
+      gender: searchData.lookingFor,
+      age_from: searchData.ageFrom,
+      age_to: searchData.ageTo,
+      religion: searchData.religion,
+      marital_status: searchData.marital_status,
+    }).toString();
+
+    const accessToken = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
+    if (!accessToken) {
+      // If not logged in → redirect to login and preserve the search query
+      const redirectUrl = encodeURIComponent(`/user/search?${query}`);
+      router.push(`/login?redirect=${redirectUrl}`);
+      return;
+    }
+
+    // If logged in → go directly to search page
+    router.push(`/user/search?${query}`);
+  };
+
+  
   const ageOptions = Array.from({ length: 43 }, (_, i) => i + 18);
 
   return (
@@ -59,7 +105,7 @@ const HeroSection = () => {
         </div>
 
         <div className="px-4 md:px-0">
-          <div className="bg-white/10 w-full backdrop-blur-xl  rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12 relative z-30">
+          <form onSubmit={handleSubmit} className="bg-white/10 w-full backdrop-blur-xl  rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12 relative z-30">
             {/* Horizontal Dropdown Row */}
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
               {/* Looking For */}
@@ -249,50 +295,33 @@ const HeroSection = () => {
               {/* Location */}
               <div className="relative flex-1">
                 <label className="block text-sm font-semibold text-white/90 uppercase tracking-wider mb-2">
-                  Location
+                  Marital Status
                 </label>
                 <div className="relative">
                   <select
-                    value={searchData.location}
+                    value={searchData.marital_status}
                     onChange={(e) =>
-                      setSearchData({ ...searchData, location: e.target.value })
+                      setSearchData({ ...searchData, marital_status: e.target.value })
                     }
                     className="w-full h-16 px-4 pr-10 bg-white/15 backdrop-blur-sm border-2 border-white/20 rounded-2xl text-white font-medium shadow-lg transition-all duration-300 hover:bg-white/20 hover:border-white/40 focus:border-orange-400 focus:outline-none appearance-none"
                   >
                     <option className="bg-white border-b text-gray-800">
                       {" "}
-                      Location
+                      Select
                     </option>
-                    <option value="dhaka" className="bg-gray-800">
-                      Dhaka
+                    <option value="UnMarried" className="bg-gray-800">
+                      UnMarried
                     </option>
-                    <option value="chittagong" className="bg-gray-800">
-                      Chittagong
+                    <option value="Married" className="bg-gray-800">
+                      Married
                     </option>
-                    <option value="sylhet" className="bg-gray-800">
-                      Sylhet
+                    <option value="Divorced" className="bg-gray-800">
+                      Divorced
                     </option>
-                    <option value="rajshahi" className="bg-gray-800">
-                      Rajshahi
+                    <option value="Widowed" className="bg-gray-800">
+                      Widowed
                     </option>
-                    <option value="khulna" className="bg-gray-800">
-                      Khulna
-                    </option>
-                    <option value="barisal" className="bg-gray-800">
-                      Barisal
-                    </option>
-                    <option value="usa" className="bg-gray-800">
-                      USA
-                    </option>
-                    <option value="uk" className="bg-gray-800">
-                      UK
-                    </option>
-                    <option value="canada" className="bg-gray-800">
-                      Canada
-                    </option>
-                    <option value="australia" className="bg-gray-800">
-                      Australia
-                    </option>
+                    
                   </select>
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                     <svg
@@ -315,14 +344,15 @@ const HeroSection = () => {
               {/* Search Button */}
               <div className="flex items-end">
                 <button
-                  onClick={() => console.log(searchData)}
+                  // 
+                  type="submit"
                   className="h-16 w-full bg-gradient-to-r from-pink-600 via-red-600 to-orange-600 text-white px-6 py-2 text-xl font-bold rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105"
                 >
                   Search
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
 
         {/* Statistics */}

@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginUser } from "@/service/authService";
-import { Eye, EyeOff, Heart, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -32,6 +32,41 @@ const Login = () => {
     formState: { errors },
   } = useForm<LoginForm>();
 
+  // const onSubmit = async (data: LoginForm) => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await loginUser(data);
+  //     console.log("Login response:", res);
+
+  //     if (res?.status) {
+  //       toast.success(res.message || "Login successful");
+
+  //       // ✅ Save token in localStorage for client-side use
+  //       if (res.token) {
+  //         console.log(res.token);
+  //         localStorage.setItem("accessToken", res.token);
+  //         console.log("set localstorage token");
+  //       }
+
+  //       // Wait a bit for cookie to be set and then redirect
+  //       setTimeout(() => {
+  //         // router.push("/user/dashboard");
+  //         const redirect = new URLSearchParams(window.location.search).get("redirect");
+  //         router.push(redirect || "/user/dashboard");
+
+  //         setLoading(false);
+  //       }, 500);
+  //     } else {
+  //       toast.error(res?.message || "Login failed");
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Login failed. Please try again.");
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     try {
@@ -41,27 +76,28 @@ const Login = () => {
       if (res?.status) {
         toast.success(res.message || "Login successful");
 
-        // ✅ Save token in localStorage for client-side use
         if (res.token) {
-          console.log(res.token);
           localStorage.setItem("accessToken", res.token);
-          console.log("set localstorage token");
         }
 
-        // Wait a bit for cookie to be set and then redirect
+        // Determine redirect target
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirect = searchParams.get("redirect");
+
+        // Delay for smoother UX
         setTimeout(() => {
-          router.push("/user/dashboard");
-          setLoading(false);
-        }, 500);
+          router.push(redirect || "/user/dashboard");
+        }, 300);
       } else {
-        toast.error(res?.message || "Login failed");
-        setLoading(false);
+        toast.error(res?.message || "Invalid credentials");
       }
     } catch (error) {
       toast.error("Login failed. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
+
 
 
   return (
@@ -72,9 +108,13 @@ const Login = () => {
             href="/"
             className="flex items-center justify-center space-x-2 mb-6"
           >
-            <Heart className="h-8 w-8 text-rose-500" />
-            <span className="text-3xl font-bold text-gray-900">
-              BiyeBandhan
+            <img
+              src="/logo.png" // **<-- REPLACE WITH YOUR ACTUAL IMAGE PATH**
+              alt="BiyeBandhan Logo"
+              className="w-25 h-25 object-contain" // Ensures the image fits well
+            />
+            <span className="text-3xl font-bold mr-6 text-gray-900">
+              SaadiMart BD
             </span>
           </Link>
         </div>
@@ -172,12 +212,19 @@ const Login = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Don&apos;t have an account?{" "}
-                <Link
+                {/* <Link
                   href="/register"
                   className="text-rose-500 hover:text-rose-600 font-medium"
                 >
                   Sign up
-                </Link>
+                </Link> */}
+              <Link
+                href={`/register${typeof window !== "undefined" && window.location.search ? window.location.search : ""}`}
+                className="text-rose-500 hover:text-rose-600 font-medium"
+              >
+                Sign up
+              </Link>
+
               </p>
             </div>
           </CardContent>

@@ -26,9 +26,8 @@ const Header: React.FC<HeaderProps> = ({ user}) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navLink = [
-    { name: "Search", path: "/user/search" },
     { name: "Success Stories", path: "/stories" },
-    { name: "Packages", path: "/packages" },
+    { name: "Packages", path: "/user/packages" },
     { name: "Help", path: "/help" },
   ];
 
@@ -54,9 +53,16 @@ const Header: React.FC<HeaderProps> = ({ user}) => {
   }, []);
 
   const handleLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully");
-    router.push("/");
+    try{
+      await logout();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userData");
+      toast.success("Successfully logged out!");
+      router.push("/");
+    }catch(error){
+      toast.error("Logout failed!");
+      console.error("Logout failed:", error);
+    }
   };
 
   return (

@@ -15,14 +15,19 @@ export async function GET(req: NextRequest) {
 
     const data = await res.json();
 
-    if (!res.ok) {
-      return NextResponse.json(
-        { success: false, message: data.message || "Failed to fetch plans" },
-        { status: res.status }
-      );
+    // ✅ Decode `features` if it's a stringified JSON
+    if (data?.plans?.length) {
+      data.plans = data.plans.map((plan: any) => ({
+        ...plan,
+        features:
+          typeof plan.features === "string"
+            ? JSON.parse(plan.features)
+            : plan.features,
+        popular: plan.popular === 1 || plan.popular === true,
+      }));
     }
-
-    return NextResponse.json(data, { status: 200 });
+    // console.log("Processed plans data:", data);
+    return NextResponse.json(data, { status: res.status });
   } catch (err: any) {
     console.error("Error fetching plans:", err);
     return NextResponse.json(

@@ -68,7 +68,7 @@ import Link from "next/link";
 
 const CompleteProfileBanner = () => {
   const [progress, setProgress] = useState<number>(0);
-  const [lastStep, setLastStep] = useState<number>(1);
+  const [lastStep, setLastStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -85,9 +85,10 @@ const CompleteProfileBanner = () => {
         });
 
         const data = await res.json();
+        
         if (res.ok && data.success) {
           setProgress(data.profile_completion || 0);
-          setLastStep(data.last_completed_step || 1);
+          setLastStep(data.last_completed_step);
         } else {
           console.error("Failed to fetch progress:", data.message);
         }

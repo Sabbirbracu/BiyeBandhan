@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { ChevronRight, Crown, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface UserSidebarProps {
   user: any;
@@ -16,8 +17,16 @@ const UserSidebar = ({ user, onPaymentClick }: UserSidebarProps) => {
   const pathname = usePathname();
 
   const handleLogout = async () => {
-    await logout();
-    router.push("/");
+    try{
+      await logout();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userData");
+      toast.success("Successfully logged out!");
+      router.push("/");
+    }catch(error){
+      toast.error("Logout failed!");
+      console.error("Logout failed:", error);
+    }
   };
 
   const menuItems = [

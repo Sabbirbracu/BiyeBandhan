@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     console.log("Sending params to backend:", body);
 
 
-    const backendUrl = process.env.BACKEND_URL || "http://127.0.0.1:8000";
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
     const res = await fetch(`${backendUrl}/api/profiles/search`, {
       method: "POST",

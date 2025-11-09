@@ -60,6 +60,7 @@ export interface Photo {
 export interface ProfileData {
   id: number;
   user_id: number;
+  profile_id: number;
   gender: string;
   dob: string;
   religion: string;

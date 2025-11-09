@@ -11,9 +11,9 @@ export async function GET(req: Request) {
         "Content-Type": "application/json",
       },
     });
-    // console.log("get this response",res)
-    const data = await res.json();
 
+    const data = await res.json();
+    
     // Pass the backend response directly to the client
     return NextResponse.json(data, { status: res.status });
   } catch (error) {

@@ -34,7 +34,6 @@ const UserSidebar = ({ user, onPaymentClick }: UserSidebarProps) => {
     { name: "Edit Profile", path: "/user/edit-profile" },
     { name: "Photo Management", path: "/user/photos" },
     { name: "Messages (8)", path: "/user/messages" },
-    { name: "Partner Preferences", path: "/user/preferences" },
     { name: "Payment", path: "" }, // leave path empty because it will trigger modal
   ];
 

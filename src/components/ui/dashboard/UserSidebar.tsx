@@ -37,10 +37,9 @@ const UserSidebar = ({ user, onPaymentClick }: UserSidebarProps) => {
     { name: "Payment", path: "" }, // leave path empty because it will trigger modal
   ];
 
-  const plan = user?.plan?.plan_name || "Free";
+  const plan = user?.plan?.plan_name || "Basics";
   const upgradeMapping: Record<string, string | null> = {
-    Free: "Basic",
-    Basic: "Premium",
+    Basics: "Premium",
     Premium: "Elite",
     Elite: "Vip",
     Vip: null,
@@ -84,7 +83,7 @@ const UserSidebar = ({ user, onPaymentClick }: UserSidebarProps) => {
               width:
                 plan === "Free"
                   ? "10%"
-                  : plan === "Basic"
+                  : plan === "Basics"
                   ? "30%"
                   : plan === "Premium"
                   ? "60%"

@@ -8,6 +8,7 @@ export async function GET(req: Request) {
   try {
     const cookieStore = await cookies();
     const userData = cookieStore.get("userData")?.value;
+    console.log("User data from cookies (careers GET):", userData);
     const profile_id = userData ? JSON.parse(userData).profile_id : null;
 
     if (!profile_id) {

@@ -72,10 +72,21 @@ const Header: React.FC<HeaderProps> = ({ user}) => {
 
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Heart className="h-8 w-8 text-rose-500" />
-            <span className="text-2xl font-extrabold text-gray-200">
-              BiyeBandhan
-            </span>
+            <div className="flex items-center space-x-2">
+              {/* This is the modified section: icon removed, image added */}
+              <div className="p-1.5 rounded-full overflow-hidden w-20 h-20 flex items-center justify-center">
+                  <img
+                      src="/logo.png" 
+                      alt="ShaadiMart BD Logo"
+                      className="w-full h-full object-contain" // Ensures the image fits well
+                  />
+              </div>
+              {/* End of modified section */}
+              
+              <span className={"text-xl sm:text-2xl text-white font-bold transition-colors duration-300"}>
+                  ShaadiMart BD
+              </span>
+          </div>
           </Link>
 
           {/* Navigation Links */}

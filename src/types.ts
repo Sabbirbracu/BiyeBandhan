@@ -75,3 +75,21 @@ export interface ProfileData {
   partner_preference: PartnerPreference | null;
   photos: Photo[];
 }
+
+
+
+export interface Message {
+  sender: "me" | "them";
+  text: string;
+  time: string;
+}
+
+export interface ChatItem {
+  id: number;
+  name: string;
+  lastMsg: string;
+  image: string;
+  timeOrDate: string;
+  isActive: boolean;
+  userId: number;
+}

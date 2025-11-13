@@ -37,7 +37,7 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log("Fetched conversations from backend:", data);
+    // console.log("Fetched conversations from backend:", data);
 
     // No need to filter, backend already sends only relevant conversations
     return NextResponse.json(data);

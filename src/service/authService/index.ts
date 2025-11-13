@@ -229,6 +229,7 @@ export const loginUser = async (userData: FieldValues) => {
     const result = await res.json();
     console.log("Login result:", result);
 
+
     if (result?.status && result?.token) {
       const cookieStore = await cookies();
 
@@ -252,10 +253,11 @@ export const loginUser = async (userData: FieldValues) => {
         });
       }
 
-      // ✅ Optional: sync to localStorage client-side
+      // // ✅ Optional: sync to localStorage client-side
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", result.token);
         localStorage.setItem("userData", JSON.stringify(result.data));
+        console.log("LocalStorage updated with accessToken and userData", result.data);
       }
 
       revalidateTag("loginUser");

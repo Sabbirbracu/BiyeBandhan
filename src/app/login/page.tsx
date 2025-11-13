@@ -78,6 +78,7 @@ const Login = () => {
 
         if (res.token) {
           localStorage.setItem("accessToken", res.token);
+          localStorage.setItem("userData", JSON.stringify(res.data));
         }
 
         // Determine redirect target

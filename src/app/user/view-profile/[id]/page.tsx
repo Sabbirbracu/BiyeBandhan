@@ -16,6 +16,7 @@ import { calculateAge, getUserProfile } from "@/utils/profileUtils";
 export default function ViewProfilePage({ params }: { params: Promise<{ id: string }> }) {
   // ✅ unwrap params using React.use()
   const { id: profileId } = use(params);
+  console.log("Viewing profile ID:", profileId);
 
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);

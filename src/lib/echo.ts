@@ -21,7 +21,7 @@ export const getEchoInstance = () => {
   echoInstance = new Echo({
     broadcaster: "reverb",
     key: process.env.NEXT_PUBLIC_REVERB_APP_KEY!,
-    wsHost: process.env.NEXT_PUBLIC_REVERB_HOST || "127.0.0.1",
+    wsHost: process.env.NEXT_PUBLIC_REVERB_HOST || "193.168.195.68",
     wsPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT!),
     forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === "https",
     disableStats: true,

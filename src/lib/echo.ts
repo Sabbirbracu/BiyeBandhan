@@ -21,9 +21,10 @@ export const getEchoInstance = () => {
   echoInstance = new Echo({
     broadcaster: "reverb",
     key: process.env.NEXT_PUBLIC_REVERB_APP_KEY!,
-    wsHost: process.env.NEXT_PUBLIC_REVERB_HOST!, // ✅ REMOVED hardcoded fallback
-    wsPort: Number(process.env.NEXT_PUBLIC_REVERB_PORT!),
-    forceTLS: false,
+    wsHost: process.env.NEXT_PUBLIC_REVERB_HOST!,
+    wsPort: 443, // Use 443 for HTTPS
+    wssPort: 443,
+    forceTLS: true, // ✅ Set to true for HTTPS
     disableStats: true,
     enabledTransports: ["ws", "wss"],
     authEndpoint: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`,
@@ -32,7 +33,6 @@ export const getEchoInstance = () => {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
       },
-      params: (socketId: string) => ({ socket_id: socketId }),
     },
   });
 

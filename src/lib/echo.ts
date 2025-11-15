@@ -22,9 +22,9 @@ export const getEchoInstance = () => {
     broadcaster: "reverb",
     key: process.env.NEXT_PUBLIC_REVERB_APP_KEY!,
     wsHost: process.env.NEXT_PUBLIC_REVERB_HOST!,
-    wsPort: 443, // Use 443 for HTTPS
-    wssPort: 443,
-    forceTLS: true, // ✅ Set to true for HTTPS
+    wsPort: parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || '443'),
+    wssPort: parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || '443'),
+    forceTLS: (process.env.NEXT_PUBLIC_REVERB_SCHEME === 'https'),
     disableStats: true,
     enabledTransports: ["ws", "wss"],
     authEndpoint: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`,

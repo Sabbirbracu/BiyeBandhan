@@ -78,10 +78,18 @@ export interface ProfileData {
 
 
 
+// export interface Message {
+//   sender: "me" | "them";
+//   text: string;
+//   time: string;
+// }
+
 export interface Message {
   sender: "me" | "them";
   text: string;
   time: string;
+  tempId?: string; // For optimistic updates
+  failed?: boolean; // For error states
 }
 
 export interface ChatItem {

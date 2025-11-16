@@ -1,10 +1,5 @@
 "use client";
 
-// Assuming you still want to use Card and Search from lucide-react, 
-// I'll include the imports needed for the visual design.
-// NOTE: You'll need to make sure these components are available in your project.
-// For this example, I'll use placeholders for clarity if the imports aren't defined.
-// import { Card } from "@/components/ui/card"; // Placeholder for a Card component
 import { Search } from "lucide-react"; // Assuming lucide-react is installed
 
 // Re-using the current version's interfaces (with the addition of optional status for design)

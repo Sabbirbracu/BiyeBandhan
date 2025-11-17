@@ -160,7 +160,7 @@ const Footer = () => {
         <div className="border-t border-gray-700 pt-4 text-center">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400">
-              ©2025 Saahimart BD All rights reserved.
+              ©2025 Shaadimart BD All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <a

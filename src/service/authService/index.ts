@@ -1,32 +1,29 @@
 // "use server";
-// import { revalidateTag } from "next/cache";
 // import { cookies } from "next/headers";
+// import { revalidateTag } from "next/cache";
 // import { FieldValues } from "react-hook-form";
 
+// /**
+//  * ===========================
+//  * SIGN UP USER
+//  * ===========================
+//  */
 // export const SignUpUser = async (userData: FieldValues) => {
-//   console.log(userData, "userData from service");
 //   const apiUrl = `${process.env.NEXT_PUBLIC_BASE_API}/signup`;
-//   console.log("API URL:", apiUrl);
+
 //   try {
 //     const res = await fetch(apiUrl, {
 //       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(userData), // <--- must stringify
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(userData),
 //     });
 
-//     console.log("Response status:", res.status);
-//     console.log("Response headers:", Object.fromEntries(res.headers.entries()));
-
 //     if (!res.ok) {
-//       // Optional: catch non-200 responses
 //       const text = await res.text();
-//       console.error("Server response not OK:", res.status, text);
-//       throw new Error(`Failed to signup: ${res.status} - ${text || 'No response body'}`);
+//       throw new Error(`Signup failed: ${res.status} - ${text || "Unknown error"}`);
 //     }
 
-//     const result = await res.json(); // Now it will parse JSON
+//     const result = await res.json();
 //     return result;
 //   } catch (error: any) {
 //     console.error("SignUpUser error:", error.message);
@@ -34,80 +31,96 @@
 //   }
 // };
 
+// /**
+//  * ===========================
+//  * LOGIN USER
+//  * ===========================
+//  */
 // export const loginUser = async (userData: FieldValues) => {
 //   try {
 //     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/login`, {
 //       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
+//       headers: { "Content-Type": "application/json" },
 //       body: JSON.stringify(userData),
 //     });
+
 //     const result = await res.json();
 //     console.log("Login result:", result);
-    
-//     if (result?.status) {
-//       console.log("Token received:", result?.token);
-      
-//       if (result?.token) {
-//         const cookieStore = await cookies();
-//         cookieStore.set("accessToken", result.token, {
+
+
+//     if (result?.status && result?.token) {
+//       const cookieStore = await cookies();
+
+//       // Store access token securely
+//       cookieStore.set("accessToken", result.token, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "lax",
+//         path: "/",
+//         maxAge: 60 * 60 * 24 * 7, // 7 days
+//       });
+
+//       // Store user data (id, email, profile_id, plan, etc.)
+//       if (result?.data) {
+//         cookieStore.set("userData", JSON.stringify(result.data), {
 //           httpOnly: true,
 //           secure: process.env.NODE_ENV === "production",
 //           sameSite: "lax",
-//           maxAge: 60 * 60 * 24 * 7, // 7 days
 //           path: "/",
+//           maxAge: 60 * 60 * 24 * 7,
 //         });
-        
-//         // Store user data in cookie as well
-//         if (result?.data) {
-//           cookieStore.set("userData", JSON.stringify(result.data), {
-//             httpOnly: true,
-//             secure: process.env.NODE_ENV === "production",
-//             sameSite: "lax",
-//             maxAge: 60 * 60 * 24 * 7, // 7 days
-//             path: "/",
-//           });
-//         }
-//         console.log("Cookie set successfully");
+//       }
+
+//       // // ✅ Optional: sync to localStorage client-side
+//       if (typeof window !== "undefined") {
+//         localStorage.setItem("accessToken", result.token);
+//         localStorage.setItem("userData", JSON.stringify(result.data));
+//         console.log("LocalStorage updated with accessToken and userData", result.data);
 //       }
 
 //       revalidateTag("loginUser");
 //     }
 
 //     return result;
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   } catch (error: any) {
+//     console.error("Login error:", error.message);
 //     return { status: false, message: error.message || "Login failed" };
 //   }
 // };
 
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// /**
+//  * ===========================
+//  * CHANGE PASSWORD
+//  * ===========================
+//  */
 // export const PasswordChange = async (payload: any) => {
 //   try {
-//     const res = await fetch(
-//       `${process.env.NEXT_PUBLIC_BASE_API}/user/changePassword`,
-//       {
-//         method: "POST",
-//         headers: {
-//           Authorization: `Bearer ${
-//             (await cookies()).get("accessToken")!.value
-//           }`,
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(payload),
-//       }
-//     );
+//     const cookieStore = await cookies();
+//     const token = cookieStore.get("accessToken")?.value;
+
+//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/changePassword`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(payload),
+//     });
 
 //     const data = await res.json();
 //     revalidateTag("loginUser");
-
 //     return data;
-//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   } catch (error: any) {
-//     return Error(error.message);
+//     console.error("PasswordChange error:", error.message);
+//     return { status: false, message: error.message };
 //   }
 // };
+
+// /**
+//  * ===========================
+//  * GET CURRENT USER (Optimized)
+//  * ===========================
+//  */
 // export const getCurrentUser = async () => {
 //   try {
 //     const cookieStore = await cookies();
@@ -119,30 +132,25 @@
 //       return null;
 //     }
 
-//     console.log("Access token exists, length:", accessToken.length);
-
-//     // First try to get user data from cookie (faster)
+//     // 1️⃣ First try cookie cache
 //     if (userDataCookie) {
 //       try {
 //         const userData = JSON.parse(userDataCookie);
-//         console.log("User data found in cookie");
 //         return userData;
-//       } catch (parseError) {
-//         console.error("Error parsing user data from cookie:", parseError);
+//       } catch {
+//         console.warn("Invalid userData cookie. Fetching from backend...");
 //       }
 //     }
 
-//     // If not in cookie, fetch from server
-//     console.log("Fetching user data from server");
+//     // 2️⃣ Fallback to backend
 //     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/user/me`, {
 //       method: "GET",
 //       headers: {
-//         Authorization: `Bearer ${accessToken}`,
 //         "Content-Type": "application/json",
+//         Authorization: `Bearer ${accessToken}`,
 //       },
-//       next: {
-//         tags: ["loginUser"],
-//       },
+//       cache: "no-store",
+//       next: { tags: ["loginUser"] },
 //     });
 
 //     if (!res.ok) {
@@ -152,37 +160,49 @@
 
 //     const responseData = await res.json();
 
-//     if (responseData.success) {
-//       // Update cookie with fetched data
-//       cookieStore.set("userData", JSON.stringify(responseData.data), {
+//     if (responseData?.success || responseData?.status) {
+//       const data = responseData.data || responseData.user || responseData;
+//       cookieStore.set("userData", JSON.stringify(data), {
 //         httpOnly: true,
 //         secure: process.env.NODE_ENV === "production",
 //         sameSite: "lax",
-//         maxAge: 60 * 60 * 24 * 7,
 //         path: "/",
+//         maxAge: 60 * 60 * 24 * 7,
 //       });
-//       return responseData.data;
-//     } else {
-//       return null;
+//       return data;
 //     }
+
+//     return null;
 //   } catch (error) {
-//     console.error("Error getting current user:", error);
+//     console.error("Error in getCurrentUser:", error);
 //     return null;
 //   }
 // };
 
+// /**
+//  * ===========================
+//  * LOGOUT
+//  * ===========================
+//  */
 // export const logout = async () => {
 //   const cookieStore = await cookies();
 //   cookieStore.delete("accessToken");
 //   cookieStore.delete("userData");
 //   revalidateTag("loginUser");
+
+//   if (typeof window !== "undefined") {
+//     localStorage.removeItem("accessToken");
+//     localStorage.removeItem("userData");
+//   }
+
+//   return { success: true };
 // };
 
 
 
 "use server";
-import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 
 /**
@@ -200,16 +220,38 @@ export const SignUpUser = async (userData: FieldValues) => {
       body: JSON.stringify(userData),
     });
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Signup failed: ${res.status} - ${text || "Unknown error"}`);
+    const result = await res.json();
+    
+    // Check if registration was successful based on response data
+    if (result.status === true || result.success === true || result.message?.includes("successfully") || result.user) {
+      return { 
+        success: true, 
+        message: result.message || "Registration successful!",
+        user: result.user || result.data 
+      };
     }
 
-    const result = await res.json();
-    return result;
+    // If we get here, registration failed
+    return { 
+      success: false, 
+      message: result.message || "Registration failed" 
+    };
+    
   } catch (error: any) {
     console.error("SignUpUser error:", error.message);
-    return { success: false, message: error.message || "Unknown error" };
+    
+    // Check if it's actually a success case with weird error
+    if (error.message?.includes("successfully")) {
+      return { 
+        success: true, 
+        message: "Registration successful!" 
+      };
+    }
+    
+    return { 
+      success: false, 
+      message: error.message || "Unknown error occurred" 
+    };
   }
 };
 
@@ -228,7 +270,6 @@ export const loginUser = async (userData: FieldValues) => {
 
     const result = await res.json();
     console.log("Login result:", result);
-
 
     if (result?.status && result?.token) {
       const cookieStore = await cookies();
@@ -253,7 +294,7 @@ export const loginUser = async (userData: FieldValues) => {
         });
       }
 
-      // // ✅ Optional: sync to localStorage client-side
+      // Optional: sync to localStorage client-side
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", result.token);
         localStorage.setItem("userData", JSON.stringify(result.data));

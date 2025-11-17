@@ -1,7 +1,8 @@
 "use client";
 
-import { Heart, Users, Target, Star, Shield, Globe } from "lucide-react";
+import Footer from "@/components/share/Footer";
 import Navbar from "@/components/share/Navbar";
+import { Globe, Heart, Shield, Star, Target, Users } from "lucide-react";
 
 export default function AboutUs() {
   const features = [
@@ -212,14 +213,7 @@ export default function AboutUs() {
         </section>
 
         {/* Footer Note */}
-        <footer className="bg-gray-900 text-white py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-gray-400">
-              © {new Date().getFullYear()} ShaadiMart BD. All rights reserved. | 
-              Building relationships, building futures.
-            </p>
-          </div>
-        </footer>
+        < Footer />
     </>
   );
 }

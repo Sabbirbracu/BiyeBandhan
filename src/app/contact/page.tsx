@@ -1,7 +1,8 @@
 "use client";
 
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from "lucide-react";
+import Footer from "@/components/share/Footer";
 import Navbar from "@/components/share/Navbar";
+import { Clock, Mail, MapPin, MessageCircle, Phone, Send } from "lucide-react";
 import { useState } from "react";
 
 export default function ContactUs() {
@@ -268,14 +269,7 @@ export default function ContactUs() {
         </section>
 
         {/* Footer Note */}
-        <footer className="bg-gray-900 text-white py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-gray-400">
-              © {new Date().getFullYear()} ShaadiMart BD. All rights reserved. | 
-              Building relationships, building futures.
-            </p>
-          </div>
-        </footer>
+        < Footer />
     </>
   );
 }

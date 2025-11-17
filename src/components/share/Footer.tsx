@@ -13,41 +13,41 @@ const Footer = () => {
     {
       title: "Company",
       links: [
-        { name: "About Us", href: "#" },
-        { name: "Success Stories", href: "#" },
-        { name: "Careers", href: "#" },
-        { name: "Press", href: "#" },
-        { name: "Blog", href: "#" },
+        { name: "About Us", href: "/about" },
+        { name: "Success Stories", href: "/notFound" },
+        { name: "Careers", href: "/notFound" },
+        { name: "Press", href: "/notFound" },
+        { name: "Blog", href: "/notFound" },
       ],
     },
     {
       title: "Services",
       links: [
-        { name: "Find Matches", href: "#" },
-        { name: "Premium Plans", href: "#" },
-        { name: "Matchmaking", href: "#" },
-        { name: "Events", href: "#" },
-        { name: "Consultation", href: "#" },
+        { name: "Find Matches", href: "/notFound" },
+        { name: "Premium Plans", href: "/notFound" },
+        { name: "Matchmaking", href: "/notFound" },
+        { name: "Events", href: "/notFound" },
+        { name: "Consultation", href: "/notFound" },
       ],
     },
     {
       title: "Support",
       links: [
-        { name: "Help Center", href: "#" },
-        { name: "Contact Us", href: "#" },
-        { name: "Safety Tips", href: "#" },
-        { name: "Community Guidelines", href: "#" },
-        { name: "Report Issue", href: "#" },
+        { name: "Help Center", href: "/notFound" },
+        { name: "Contact Us", href: "/contact" },
+        { name: "Safety Tips", href: "/notFound" },
+        { name: "Community Guidelines", href: "/notFound" },
+        { name: "Report Issue", href: "/notFound" },
       ],
     },
     {
       title: "Legal",
       links: [
-        { name: "Privacy Policy", href: "#" },
-        { name: "Terms of Service", href: "#" },
-        { name: "Cookie Policy", href: "#" },
-        { name: "Refund Policy", href: "#" },
-        { name: "Disclaimer", href: "#" },
+        { name: "Privacy & Policy", href: "/privacy-policy" },
+        { name: "Terms & Service", href: "terms" },
+        { name: "Cookie Policy", href: "/notFound" },
+        { name: "Refund Policy", href: "notFound" },
+        { name: "Disclaimer", href: "notFound" },
       ],
     },
   ];
@@ -61,7 +61,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
           {/* Company Info */}
@@ -74,7 +74,7 @@ const Footer = () => {
                       className="w-full h-full object-contain" // Ensures the image fits well
                   />
               </div>
-              <span className="text-2xl font-bold"> ShaadiMart BD</span>
+              <span className="text-2xl font-bold text-red-600"> ShaadiMart BD</span>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               The most trusted matrimony service for NRIs in Bangladesh. We help
@@ -157,27 +157,26 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 pt-8 text-center">
+        <div className="border-t border-gray-700 pt-4 text-center">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400">
-              © 2025 BiyeBandhan All rights reserved. Made with ❤️ for bringing
-              hearts together.
+              ©2025 Saahimart BD All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <a
-                href="#"
+                href="/privacy-policy"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
-                Privacy
+                Privacy & Policy
               </a>
               <a
-                href="#"
+                href="/terms-condition"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
-                Terms
+                Terms & Condition
               </a>
               <a
-                href="#"
+                href="/notFound"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
                 Cookies

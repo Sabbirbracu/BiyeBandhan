@@ -184,7 +184,7 @@
 
 import { logout } from "@/service/authService";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Heart, LogOut, Settings, User, Menu } from "lucide-react"; // Added Menu icon
+import { ChevronDown, LogOut, Menu, Settings, User } from "lucide-react"; // Added Menu icon
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -265,7 +265,7 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick }) => {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/user/dashboard" className="flex items-center space-x-2">
               <div className="flex items-center space-x-2">
                 <div className="p-1.5 rounded-full overflow-hidden w-20 h-20 flex items-center justify-center">
                     <img

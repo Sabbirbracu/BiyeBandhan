@@ -38,6 +38,7 @@ export const getUserProfile = async (profileId: string): Promise<ProfileData | n
     }
 
     const result = await res.json();
+    console.log("Profile fetch result:", result);
     if (result?.success && result?.data) {
       return result.data as ProfileData;
     }

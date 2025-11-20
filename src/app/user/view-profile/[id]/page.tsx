@@ -45,6 +45,8 @@ export default function ViewProfilePage({ params }: { params: Promise<{ id: stri
       </div>
     );
 
+  console.log("Profile Data:", profile);
+
   
   const age = calculateAge(profile.dob);
   const primaryPhotoUrl =
@@ -55,8 +57,13 @@ export default function ViewProfilePage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-      <ProfileHeader profile={profile} primaryPhotoUrl={primaryPhotoUrl} age={age} />
-
+      {/* <ProfileHeader profile={profile} primaryPhotoUrl={primaryPhotoUrl} age={age} /> */}
+      <ProfileHeader 
+          profile={profile} 
+          primaryPhotoUrl={primaryPhotoUrl} 
+          age={age} 
+          phoneNumber={profile.user?.phone_number}
+      />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
         <div className="space-y-8 lg:order-1 order-2">
           <LocationBackground profile={profile} age={age} />

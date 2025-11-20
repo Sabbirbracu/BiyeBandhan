@@ -282,7 +282,6 @@ const UserSidebar = ({ user, isOpen = false, onClose, onPaymentClick }: UserSide
   const menuItems = [
     { name: "Dashboard", path: "/user/dashboard" },
     { name: "Edit Profile", path: "/user/edit-profile" },
-    { name: "Photo Management", path: "/user/photos" },
     { name: "Messages", path: "/user/messages" },
     { name: "Payment", path: "" },
   ];

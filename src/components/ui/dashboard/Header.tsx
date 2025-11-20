@@ -209,7 +209,7 @@ const Header: React.FC<HeaderProps> = ({ user, onMenuClick }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navLink = [
-    { name: "Success Stories", path: "/stories" },
+    // { name: "Success Stories", path: "/success-stories" },
     { name: "Packages", path: "/user/packages" },
     { name: "Help", path: "/help" },
   ];

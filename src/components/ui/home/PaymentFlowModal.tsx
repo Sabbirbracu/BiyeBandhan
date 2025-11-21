@@ -175,9 +175,9 @@ export default function PaymentFlowModal({ plan, onClose }: PaymentFlowModalProp
             </div>
 
             <div className="bg-white/10 p-4 rounded-lg border border-white/20">
-              <h4 className="font-semibold text-lg mb-2">Step 2: Log in to Your Account</h4>
+              <h4 className="font-semibold text-lg mb-2">Step 2: Go to Payment Option</h4>
               <p>
-                After successful payment, log in to your account. You'll find a{" "}
+                After successful login, You'll find a{" "}
                 <span className="font-semibold text-pink-400">"Payment"</span> option on your sidebar.
               </p>
             </div>

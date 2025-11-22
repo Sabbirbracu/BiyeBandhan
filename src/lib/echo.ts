@@ -189,8 +189,8 @@ export const getEchoInstance = () => {
     console.log("🔑 Socket ID:", pusher.connection.socket_id);
 
     // Example: test auth for a sample private channel
-    const sampleChannel = "private-chat.2"; // change this to your actual private channel
-    console.log("📡 Testing auth for channel:", sampleChannel);
+    const channelName = "private-chat.${userId}"; // change this to your actual private channel
+    console.log("📡 Testing auth for channel:", channelName);
 
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`, {
       method: "POST",
@@ -201,7 +201,7 @@ export const getEchoInstance = () => {
       },
       body: JSON.stringify({
         socket_id: pusher.connection.socket_id,
-        channel_name: sampleChannel,
+        channel_name: channelName,
       }),
     })
       .then(res => res.json())

@@ -148,6 +148,7 @@ export const getEchoInstance = () => {
   if (echoInstance) return echoInstance;
 
   const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  
   if (!token) {
     console.error("❌ No access token found for Echo authorization");
     throw new Error("No access token found for Echo authorization");
@@ -178,14 +179,34 @@ export const getEchoInstance = () => {
     },
   });
 
-  // Attach to window for debugging
   (window as any).Echo = echoInstance;
 
   const pusher = echoInstance.connector.pusher;
 
   // Connection events
   pusher.connection.bind("connected", () => {
-    console.log("✅ Reverb connected successfully!", pusher.connection.socket_id);
+    console.log("✅ Reverb connected successfully!");
+    console.log("🔑 Socket ID:", pusher.connection.socket_id);
+
+    // Example: test auth for a sample private channel
+    const sampleChannel = "private-chat.2"; // change this to your actual private channel
+    console.log("📡 Testing auth for channel:", sampleChannel);
+
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        socket_id: pusher.connection.socket_id,
+        channel_name: sampleChannel,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => console.log("🔑 Auth test response:", data))
+      .catch(err => console.error("❌ Auth test failed:", err));
   });
 
   pusher.connection.bind("error", (err: any) => {
@@ -199,18 +220,6 @@ export const getEchoInstance = () => {
   pusher.connection.bind("state_change", (states: any) => {
     console.log("🔄 Connection state changed:", states);
   });
-
-  // Optional: auth test
-  fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  })
-    .then(res => res.json())
-    .then(data => console.log("🔑 Auth endpoint test response:", data))
-    .catch(err => console.error("❌ Auth endpoint test failed:", err));
 
   return echoInstance;
 };

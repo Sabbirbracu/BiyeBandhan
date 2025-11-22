@@ -47,6 +47,89 @@
 //   return echoInstance;
 // };
 
+// import Echo from "laravel-echo";
+// import Pusher from "pusher-js";
+
+// declare global {
+//   interface Window {
+//     Pusher: typeof Pusher;
+//     Echo: Echo<any>;
+//   }
+// }
+
+// window.Pusher = Pusher;
+
+// let echoInstance: Echo<any> | null = null;
+
+// export const getEchoInstance = () => {
+//   if (echoInstance) return echoInstance;
+
+//   const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+//   if (!token) {
+//     console.error("❌ No access token found for Echo authorization");
+//     throw new Error("No access token found for Echo authorization");
+//   }
+
+//   // Debug environment variables
+//   console.log("🌐 Echo config:");
+//   console.log("🔑 APP KEY:", process.env.NEXT_PUBLIC_REVERB_APP_KEY);
+//   console.log("🌍 WS HOST:", process.env.NEXT_PUBLIC_REVERB_HOST);
+//   console.log("🔌 WS PORT:", process.env.NEXT_PUBLIC_REVERB_PORT);
+//   console.log("🔒 Force TLS:", process.env.NEXT_PUBLIC_REVERB_SCHEME === "https");
+
+//   echoInstance = new Echo({
+//     broadcaster: "reverb",
+//     key: process.env.NEXT_PUBLIC_REVERB_APP_KEY!,
+//     wsHost: process.env.NEXT_PUBLIC_REVERB_HOST!,
+//     wsPort: parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || "6001"),
+//     wssPort: parseInt(process.env.NEXT_PUBLIC_REVERB_PORT || "6001"),
+//     forceTLS: process.env.NEXT_PUBLIC_REVERB_SCHEME === "https",
+//     disableStats: true,
+//     enabledTransports: ["ws", "wss"],
+//     authEndpoint: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`,
+//     auth: {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         Accept: "application/json",
+//       },
+//     },
+//   });
+
+//   const pusher = echoInstance.connector.pusher;
+
+//   // Connection events
+//   pusher.connection.bind("connected", () => {
+//     console.log("✅ Reverb connected successfully!", pusher.connection.socket_id);
+//   });
+
+//   pusher.connection.bind("error", (err: any) => {
+//     console.error("❌ Reverb connection error:", err);
+//   });
+
+//   pusher.connection.bind("disconnected", () => {
+//     console.warn("⚠️ Echo disconnected!");
+//   });
+
+//   pusher.connection.bind("state_change", (states: any) => {
+//     console.log("🔄 Connection state changed:", states);
+//   });
+
+//   // Optional: auth test
+//   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`, {
+//     method: "POST",
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       Accept: "application/json",
+//     },
+//   })
+//     .then(res => res.json())
+//     .then(data => console.log("🔑 Auth endpoint test response:", data))
+//     .catch(err => console.error("❌ Auth endpoint test failed:", err));
+
+//   return echoInstance;
+// };
+
+
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 
@@ -94,6 +177,9 @@ export const getEchoInstance = () => {
       },
     },
   });
+
+  // Attach to window for debugging
+  (window as any).Echo = echoInstance;
 
   const pusher = echoInstance.connector.pusher;
 

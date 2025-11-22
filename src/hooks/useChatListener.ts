@@ -2,7 +2,7 @@
 
 // import { getEchoInstance } from "@/lib/echo";
 // import { ChatItem, Message } from "@/types";
-// import { useEffect } from "react";
+// import { useEffect, useRef } from "react";
 
 // interface UseChatListenerProps {
 //   currentUserId: number | null;
@@ -19,68 +19,44 @@
 //   pendingMessages = new Set(),
 //   setPendingMessages
 // }: UseChatListenerProps) => {
+//   const channelRef = useRef<any>(null);
+
 //   useEffect(() => {
 //     if (!currentUserId) {
 //       console.warn("⚠️ No currentUserId provided, skipping chat listener.");
 //       return;
 //     }
 
-//     const echo = getEchoInstance();
+//     let echo;
+//     try {
+//       echo = getEchoInstance();
+//     } catch (error) {
+//       console.error("❌ Failed to get Echo instance:", error);
+//       return;
+//     }
 
 //     const channelName = `chat.${currentUserId}`;
 //     console.log(`%c🔔 Attempting to subscribe to private channel: ${channelName}`, "color: purple; font-weight: bold;");
 
+//     // Store channel reference for cleanup
 //     const channel = echo.private(channelName);
+//     channelRef.current = channel;
 
-//     // --- DEBUG: Listen for subscription success/failure ---
+//     // Subscription events
 //     channel.subscribed(() => {
 //       console.log(`%c✅ Successfully subscribed to channel: ${channelName}`, "color: green; font-weight: bold;");
+//     }).error((error: any) => {
+//       console.error(`%c❌ Channel subscription error:`, "color: red;", error);
+      
+//       // Log detailed error info
+//       if (error.status === 403) {
+//         console.error("Authentication failed - check your auth endpoint");
+//       } else if (error.status === 404) {
+//         console.error("Channel not found - check channel naming");
+//       }
 //     });
 
-//     channel.error((error: any) => {
-//       console.error(`%c❌ Channel subscription error on ${channelName}:`, "color: red;", error);
-//     });
-
-//     // --- Enhanced Echo connection debugging (FROM OLD VERSION) ---
-//     const pusherConn = echo.connector.pusher.connection;
-
-//     const connectionStates = {
-//       "connected": "✅ Connected",
-//       "disconnected": "⚠️ Disconnected", 
-//       "failed": "❌ Failed",
-//       "connecting": "🔄 Connecting",
-//       "unavailable": "🔴 Unavailable"
-//     };
-
-//     pusherConn.bind("state_change", (states: any) => {
-//       console.log("%c🔄 Echo connection state changed:", "color: blue;", {
-//         previous: connectionStates[states.previous as keyof typeof connectionStates] || states.previous,
-//         current: connectionStates[states.current as keyof typeof connectionStates] || states.current
-//       });
-//     });
-
-//     pusherConn.bind("connected", () => {
-//       console.log("%c✅ Echo connected successfully!", "color: green; font-weight: bold;");
-//       console.log("Socket ID:", echo.socketId());
-//     });
-
-//     pusherConn.bind("error", (err: any) => {
-//       console.error("%c❌ Echo connection error:", "color: red;", err);
-//     });
-
-//     pusherConn.bind("disconnected", () => {
-//       console.warn("%c⚠️ Echo disconnected from server.", "color: orange;");
-//     });
-
-//     pusherConn.bind("failed", () => {
-//       console.error("❌ Echo connection failed completely.");
-//     });
-
-//     pusherConn.bind("unavailable", () => {
-//       console.warn("⚠️ Echo is temporarily unavailable.");
-//     });
-
-//     // Listen for incoming messages (NEW DEDUPLICATION LOGIC)
+//     // Message listener
 //     channel.listen(".message.sent", (payload: any) => {
 //       try {
 //         console.log("%c💬 Incoming message received:", "color: green; font-weight: bold;", payload);
@@ -88,31 +64,20 @@
 //         const messageId = payload.id?.toString();
 //         const messageText = payload.message;
         
-//         // Check if this is a duplicate of an optimistic message
+//         // Duplicate check
 //         const isDuplicate = Array.from(pendingMessages).some(tempId => {
-//           // Simple content-based deduplication
 //           const isSameContent = messageText === payload.message;
-//           const isRecent = Math.abs(Date.now() - parseInt(tempId.split('-')[0])) < 5000; // Within 5 seconds
-          
-//           console.log("%c🔍 Duplicate check:", "color: gray;", {
-//             isSameContent,
-//             isRecent,
-//             tempId,
-//             messageText,
-//             payloadMessage: payload.message
-//           });
+//           const isRecent = Math.abs(Date.now() - parseInt(tempId.split('-')[0])) < 5000;
           
 //           return isSameContent && isRecent;
 //         });
 
 //         if (isDuplicate) {
-//           console.log("%c🔄 Skipping duplicate real-time message (already optimistic)", "color: orange;");
+//           console.log("%c🔄 Skipping duplicate real-time message", "color: orange;");
           
-//           // Remove from pending set
 //           if (setPendingMessages) {
 //             setPendingMessages(prev => {
 //               const newSet = new Set(prev);
-//               // Find and remove the matching tempId
 //               Array.from(prev).forEach(tempId => {
 //                 if (Math.abs(Date.now() - parseInt(tempId.split('-')[0])) < 5000) {
 //                   newSet.delete(tempId);
@@ -129,8 +94,6 @@
 //           text: payload.message,
 //           time: new Date(payload.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
 //         };
-
-//         console.log("%c📨 Adding real-time message to UI:", "color: lightgreen;", newMsg);
 
 //         setMessages((prev) => [...prev, newMsg]);
 
@@ -150,11 +113,10 @@
 //       }
 //     });
 
-//     // Cleanup on unmount
 //     return () => {
 //       console.log(`%c🧹 Cleaning up chat listener for channel: ${channelName}`, "color: gray;");
-//       if (channel) {
-//         channel.stopListening(".message.sent");
+//       if (channelRef.current) {
+//         channelRef.current.stopListening(".message.sent");
 //         echo.leave(channelName);
 //       }
 //     };
@@ -194,51 +156,71 @@ export const useChatListener = ({
     let echo;
     try {
       echo = getEchoInstance();
+      console.log("🌟 Echo instance created successfully.");
     } catch (error) {
       console.error("❌ Failed to get Echo instance:", error);
       return;
     }
 
-    const channelName = `chat.${currentUserId}`;
-    console.log(`%c🔔 Attempting to subscribe to private channel: ${channelName}`, "color: purple; font-weight: bold;");
+    const pusher = echo.connector.pusher;
 
-    // Store channel reference for cleanup
+    // --- Global Pusher / connection events ---
+    pusher.connection.bind("connected", () => {
+      console.log("✅ Pusher connected! Socket ID:", pusher.connection.socket_id);
+    });
+
+    pusher.connection.bind("disconnected", () => {
+      console.warn("⚠️ Pusher disconnected!");
+    });
+
+    pusher.connection.bind("error", (err: any) => {
+      console.error("❌ Pusher connection error:", err);
+    });
+
+    pusher.connection.bind("state_change", (states: any) => {
+      console.log("🔄 Connection state changed:", states);
+    });
+
+    const channelName = `chat.${currentUserId}`;
+    console.log(`🔔 Attempting to subscribe to private channel: ${channelName}`);
+
+    // Subscribe to channel
     const channel = echo.private(channelName);
     channelRef.current = channel;
 
-    // Subscription events
+    // Channel subscription events
     channel.subscribed(() => {
-      console.log(`%c✅ Successfully subscribed to channel: ${channelName}`, "color: green; font-weight: bold;");
+      console.log(`✅ Successfully subscribed to channel: ${channelName}`);
     }).error((error: any) => {
-      console.error(`%c❌ Channel subscription error:`, "color: red;", error);
-      
-      // Log detailed error info
-      if (error.status === 403) {
-        console.error("Authentication failed - check your auth endpoint");
-      } else if (error.status === 404) {
-        console.error("Channel not found - check channel naming");
-      }
+      console.error(`❌ Channel subscription error for ${channelName}:`, error);
+      if (error.status === 403) console.error("⚠️ Auth failed - check auth endpoint");
+      if (error.status === 404) console.error("⚠️ Channel not found - check channel name");
     });
+
+    // Global event logger for this channel
+    if (channel.bind_global) {
+      channel.bind_global((event: string, payload: any) => {
+        console.log(`🌐 [Global event] ${event}:`, payload);
+      });
+    }
 
     // Message listener
     channel.listen(".message.sent", (payload: any) => {
       try {
-        console.log("%c💬 Incoming message received:", "color: green; font-weight: bold;", payload);
+        console.log("💬 Incoming message:", payload);
 
         const messageId = payload.id?.toString();
         const messageText = payload.message;
-        
+
         // Duplicate check
         const isDuplicate = Array.from(pendingMessages).some(tempId => {
           const isSameContent = messageText === payload.message;
           const isRecent = Math.abs(Date.now() - parseInt(tempId.split('-')[0])) < 5000;
-          
           return isSameContent && isRecent;
         });
 
         if (isDuplicate) {
-          console.log("%c🔄 Skipping duplicate real-time message", "color: orange;");
-          
+          console.log("🔄 Skipping duplicate message");
           if (setPendingMessages) {
             setPendingMessages(prev => {
               const newSet = new Set(prev);
@@ -259,26 +241,24 @@ export const useChatListener = ({
           time: new Date(payload.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         };
 
-        setMessages((prev) => [...prev, newMsg]);
+        setMessages(prev => [...prev, newMsg]);
+        console.log("📨 Message added to state:", newMsg);
 
-        setChats((prev) =>
-          prev.map((chat) =>
+        setChats(prev =>
+          prev.map(chat =>
             chat.userId === payload.sender_id || chat.userId === payload.receiver_id
-              ? { 
-                  ...chat, 
-                  lastMsg: payload.message,
-                  updated_at: new Date().toISOString()
-                }
+              ? { ...chat, lastMsg: payload.message, updated_at: new Date().toISOString() }
               : chat
           )
         );
+
       } catch (err) {
-        console.error("Error processing incoming message:", err, payload);
+        console.error("❌ Error processing incoming message:", err, payload);
       }
     });
 
     return () => {
-      console.log(`%c🧹 Cleaning up chat listener for channel: ${channelName}`, "color: gray;");
+      console.log(`🧹 Cleaning up chat listener for channel: ${channelName}`);
       if (channelRef.current) {
         channelRef.current.stopListening(".message.sent");
         echo.leave(channelName);

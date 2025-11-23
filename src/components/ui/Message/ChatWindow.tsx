@@ -1,5 +1,6 @@
 // "use client";
 
+// import React from "react";
 // import { Button } from "@/components/ui/button";
 // import { Card } from "@/components/ui/card";
 // import { Input } from "@/components/ui/input";
@@ -41,6 +42,7 @@
 //   onSendMessage,
 // }: ChatWindowProps) => {
 //   const messagesEndRef = useRef<HTMLDivElement>(null);
+//   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
 //   // Auto-scroll whenever messages update
 //   useEffect(() => {
@@ -62,9 +64,9 @@
 //   };
 
 //   return (
-//     <Card className="flex py-0 flex-col h-[calc(100vh-100px)] bg-gray-200 shadow-lg rounded-2xl overflow-hidden mt-8 mx-12">
-//       {/* Header */}
-//       <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white">
+//     <div className="flex flex-col h-full bg-white">
+//       {/* Header - Hidden on mobile since we have our own mobile header */}
+//       <div className="hidden lg:flex p-4 border-b border-gray-100 items-center justify-between bg-white flex-shrink-0">
 //         <div className="flex items-center gap-3">
 //           <img
 //             src={activeUser.image}
@@ -87,8 +89,12 @@
 //         </Button>
 //       </div>
 
-//       {/* Messages Container */}
-//       <div className="flex-1 p-6 overflow-y-auto space-y-5" id="chat-messages">
+//       {/* Messages Container - Scrollable area */}
+//       <div 
+//         ref={messagesContainerRef}
+//         className="flex-1 overflow-y-auto bg-gray-100 p-4 lg:p-6 space-y-4"
+//         style={{ minHeight: 0 }} // Important for flexbox scrolling
+//       >
 //         <div className="flex justify-center text-xs text-gray-400">
 //           Today
 //         </div>
@@ -109,7 +115,7 @@
 //             )}
 
 //             <div
-//               className={`px-4 py-2 max-w-sm text-sm leading-relaxed shadow-sm ${
+//               className={`px-4 py-2 max-w-xs lg:max-w-sm text-sm leading-relaxed shadow-sm ${
 //                 msg.sender === "me"
 //                   ? `${myBubbleColor} ${messageTextColor} rounded-t-lg rounded-bl-lg`
 //                   : `${theirBubbleColor} ${messageTextColor} rounded-t-lg rounded-br-lg`
@@ -142,33 +148,33 @@
 //         <div ref={messagesEndRef} />
 //       </div>
 
-//       {/* Input Field */}
-//       <div className="p-4 border-t border-gray-100 bg-gray-50">
-//         <div className="flex items-center gap-3 bg-white rounded-lg border border-gray-200 px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-rose-400 transition-all">
-//           <Smile className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500" />
-//           <Paperclip className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500" />
+//       {/* Input Field - Fixed at bottom */}
+//       <div className="p-4 border-t border-gray-200 bg-white flex-shrink-0">
+//         <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-rose-400 transition-all">
+//           <Smile className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500 flex-shrink-0" />
+//           <Paperclip className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500 flex-shrink-0" />
 //           <Input
 //             placeholder="Type a message..."
-//             className="flex-1 border-none focus-visible:ring-0 text-sm px-2"
+//             className="flex-1 border-none focus-visible:ring-0 text-sm px-2 min-w-0"
 //             value={inputText}
 //             onChange={(e) => setInputText(e.target.value)}
 //             onKeyDown={(e) => {
 //               if (e.key === "Enter") handleSend();
 //             }}
 //           />
-//           <div className="flex items-center gap-3 pr-2">
+//           <div className="flex items-center gap-2 flex-shrink-0">
 //             <Bell className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500" />
 //             <Image className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500" />
 //           </div>
 //           <Button
 //             onClick={handleSend}
-//             className="bg-rose-500 hover:bg-rose-600 text-white h-10 w-10 rounded-md flex items-center justify-center shadow-md transition"
+//             className="bg-rose-500 hover:bg-rose-600 text-white h-9 w-9 lg:h-10 lg:w-10 rounded-md flex items-center justify-center shadow-md transition flex-shrink-0"
 //           >
 //             <Send className="h-4 w-4" />
 //           </Button>
 //         </div>
 //       </div>
-//     </Card>
+//     </div>
 //   );
 // };
 
@@ -179,10 +185,9 @@
 
 "use client";
 
-import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getProfilePictures } from "@/service/ProfilePictureService"; // Import your existing service
 import {
   Bell,
   CircleDot,
@@ -192,15 +197,14 @@ import {
   Send,
   Smile,
 } from "lucide-react";
-
 import { useEffect, useRef, useState } from "react";
 
 export interface Message {
   sender: "me" | "them";
   text: string;
   time: string;
-  tempId?: string; // For optimistic updates
-  failed?: boolean; // For error states
+  tempId?: string;
+  failed?: boolean;
 }
 
 interface ChatWindowProps {
@@ -222,17 +226,40 @@ const ChatWindow = ({
 }: ChatWindowProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [currentUserImage, setCurrentUserImage] = useState<string | null>(null);
 
   // Auto-scroll whenever messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Fetch current user's profile picture on component mount
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      try {
+        const result = await getProfilePictures(); // Use your existing service
+        
+        if (result?.success && result.data && result.data.length > 0) {
+          // Find the primary picture or use the first one
+          const primaryPic = result.data.find((pic: any) => pic.is_primary);
+          const profilePic = primaryPic || result.data[0];
+          setCurrentUserImage(profilePic.url);
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile picture:", error);
+      }
+    };
+
+    fetchProfilePicture();
+  }, []);
+
   const [inputText, setInputText] = useState("");
   const myBubbleColor = "bg-[#4CAF50]";
   const theirBubbleColor = "bg-[#9C274B]";
   const messageTextColor = "text-white";
-  const myAvatar = "https://i.pravatar.cc/100?img=1";
+  
+  // Use fetched profile picture or fallback
+  const myAvatar = currentUserImage || "https://i.pravatar.cc/100?img=11";
 
   const handleSend = () => {
     const trimmedText = inputText.trim();
@@ -244,7 +271,7 @@ const ChatWindow = ({
 
   return (
     <div className="flex flex-col h-full bg-white">
-      {/* Header - Hidden on mobile since we have our own mobile header */}
+      {/* Header */}
       <div className="hidden lg:flex p-4 border-b border-gray-100 items-center justify-between bg-white flex-shrink-0">
         <div className="flex items-center gap-3">
           <img
@@ -255,7 +282,7 @@ const ChatWindow = ({
           <div>
             <p className="font-semibold text-gray-800">{activeUser.name}</p>
             <p className="text-xs text-green-600 flex items-center gap-1">
-              <CircleDot className="h-2 w-2 fill-green-500 text-green-500" />{" "}
+              <CircleDot className="h-2 w-2 fill-green-500 text-green-500" />
               Online
             </p>
           </div>
@@ -268,11 +295,11 @@ const ChatWindow = ({
         </Button>
       </div>
 
-      {/* Messages Container - Scrollable area */}
+      {/* Messages Container */}
       <div 
         ref={messagesContainerRef}
         className="flex-1 overflow-y-auto bg-gray-100 p-4 lg:p-6 space-y-4"
-        style={{ minHeight: 0 }} // Important for flexbox scrolling
+        style={{ minHeight: 0 }}
       >
         <div className="flex justify-center text-xs text-gray-400">
           Today
@@ -327,7 +354,7 @@ const ChatWindow = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Field - Fixed at bottom */}
+      {/* Input Field */}
       <div className="p-4 border-t border-gray-200 bg-white flex-shrink-0">
         <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-rose-400 transition-all">
           <Smile className="h-5 w-5 text-gray-400 cursor-pointer hover:text-rose-500 flex-shrink-0" />

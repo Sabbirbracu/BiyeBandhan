@@ -148,7 +148,8 @@ export const getEchoInstance = () => {
   if (echoInstance) return echoInstance;
 
   const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-  
+  const userData = typeof window !== "undefined"? localStorage.getItem("userData"): null;
+  const userId = userData? JSON.parse(userData).id : null;  
   if (!token) {
     console.error("❌ No access token found for Echo authorization");
     throw new Error("No access token found for Echo authorization");
@@ -189,7 +190,7 @@ export const getEchoInstance = () => {
     console.log("🔑 Socket ID:", pusher.connection.socket_id);
 
     // Example: test auth for a sample private channel
-    const channelName = "private-chat.${userId}"; // change this to your actual private channel
+    const channelName = `private-chat.${userId}`; // change this to your actual private channel
     console.log("📡 Testing auth for channel:", channelName);
 
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/broadcasting/auth`, {

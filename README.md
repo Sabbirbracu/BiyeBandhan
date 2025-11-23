@@ -68,3 +68,67 @@ A modern, responsive matrimony web application built with **Next.js 14**, **Type
 ```bash
 git clone https://github.com/your-username/shaadimart-frontend.git
 cd shaadimart-frontend
+```
+
+2. **Install dependencies**
+```bash
+npm install
+# or
+yarn install
+```
+3. **Environment Configuration**
+   Create .env.local file:
+```bash
+# API Configuration
+NEXT_PUBLIC_BASE_API=https://api.shaadimartbd.com
+
+# Reverb WebSocket Configuration
+NEXT_PUBLIC_REVERB_APP_KEY=w7dvzclayvgljoi25lcp
+NEXT_PUBLIC_REVERB_HOST=shaadimartbd.com
+NEXT_PUBLIC_REVERB_PORT=443
+NEXT_PUBLIC_REVERB_SCHEME=https
+
+# Optional: Feature flags
+NEXT_PUBLIC_ENABLE_DARK_MODE=true
+NEXT_PUBLIC_ENABLE_PWA=false
+```
+### 🏗 Project Structure
+```bash
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Authentication routes
+│   ├── chat/              # Chat feature pages
+│   ├── profile/           # Profile management
+│   └── layout.tsx         # Root layout
+├── components/            # Reusable UI components
+│   ├── ui/               # Shadcn/UI components
+│   ├── chat/             # Chat-specific components
+│   └── forms/            # Form components
+├── services/             # API service functions
+│   ├── auth.ts          # Authentication services
+│   ├── chat.ts          # Chat services
+│   └── profile-pictures.ts # Profile picture services
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility libraries
+├── types/                # TypeScript type definitions
+└── utils/                # Helper functions
+```
+
+### 🤝 Contributing
+Fork the repository
+
+Create feature branch (git checkout -b feature/amazing-feature)
+
+Commit changes (git commit -m 'Add amazing feature')
+
+Push to branch (git push origin feature/amazing-feature)
+
+Open Pull Request
+
+
+### 📄 License
+This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+### 📞 Support
+For support, email sabbirahmad653@gmail.com or create an issue in this repository.
+

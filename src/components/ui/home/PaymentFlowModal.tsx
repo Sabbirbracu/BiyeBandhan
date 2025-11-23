@@ -141,11 +141,11 @@ export default function PaymentFlowModal({ plan, onClose }: PaymentFlowModalProp
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div className="flex justify-between items-center p-2 bg-black/20 rounded">
                 <span className="font-semibold text-pink-400">bKash:</span>
-                <span className="font-mono">01741664082</span>
+                <span className="font-mono">01712878794</span>
               </div>
               <div className="flex justify-between items-center p-2 bg-black/20 rounded">
                 <span className="font-semibold text-green-400">Nagad:</span>
-                <span className="font-mono">01741664082</span>
+                <span className="font-mono">01712878794</span>
               </div>
               <div className="flex justify-between items-center p-2 bg-black/20 rounded">
                 <span className="font-semibold text-blue-400">Rocket:</span>

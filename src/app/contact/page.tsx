@@ -33,13 +33,13 @@ export default function ContactUs() {
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Phone",
-      details: "+880 1XXX-XXXXXX",
+      details: "+8801741664082",
       description: "Mon to Fri 9am to 6pm"
     },
     {
       icon: <Mail className="h-6 w-6" />,
       title: "Email",
-      details: "info@shadimartbd.com",
+      details: "shaadimart1@gmail.com",
       description: "Send us your query anytime!"
     },
     {
